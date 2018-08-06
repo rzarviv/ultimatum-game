@@ -1,0 +1,23 @@
+{% extends "global/Page.html" %}
+{% load static otree %}
+
+{% block title %}
+    Your Choice
+{% endblock %}
+
+{% block content %}
+    <p>
+        you need to choose between 2 actions: action 'out' and action 'in'.
+        - if you choose action 'left', your payoff will be {% formfield group.f2 %} and your opponent's payoff will
+        be {% formfield group.s2 %}
+        - if you choose action 'right', your payoff will be {% formfield group.f3 %} and your opponent's payoff will
+        be {% formfield group.s3 %}
+
+        What's your choice?
+    </p>
+
+    {% formfield group.left_or_right label="I choose:" %}
+
+    {% next_button %}
+
+{% endblock %}

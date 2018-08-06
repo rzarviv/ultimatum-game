@@ -1,0 +1,29 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block content %}
+    <div class="card bg-light">
+        <div class="card-body">
+
+            <h3>
+                Instructions
+            </h3>
+            <p>
+                This is an extensive form game.
+            </p>
+            <p>
+                The objective of the competition is to facilitate the development and
+                comparison of quantitative models of behavior one-shot extensive form games.
+                In these games a proposer chooses between action Out, which enforces “outside option” payoffs on the
+                two players, and action In.
+                If In is chosen then the responder determines the payoff allocation by choosing between action Left and
+                action Right.
+                The competition is composed of two independent sub-competitions: one that predicts the proposer’s
+                behavior
+                and another that predicts the responder’s behavior.
+            </p>
+        </div>
+    </div>
+
+    {% next_button %}
+{% endblock %}
