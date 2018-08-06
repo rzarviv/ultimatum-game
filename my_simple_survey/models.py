@@ -2,10 +2,8 @@ from otree.api import (
     models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
     Currency as c, currency_range
 )
-# from game_config import GAMES
 
-
-from game_config import (GAMES)
+from game_config import GAMES
 
 author = 'Roy Zerbib'
 
@@ -14,7 +12,6 @@ This is an extensive form game.
 """
 
 roundNum = 0
-
 
 class Constants(BaseConstants):
     name_in_url = 'my_simple_survey'
@@ -41,7 +38,6 @@ class Group(BaseGroup):
         choices=['Left', 'Right'],
         widget=widgets.RadioSelect
     )
-
 
 class Player(BasePlayer):
     identity = models.StringField()

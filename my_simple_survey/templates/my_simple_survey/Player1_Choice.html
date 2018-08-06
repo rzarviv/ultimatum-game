@@ -7,14 +7,18 @@
 
 {% block content %}
     <p>
-    you need to choose between 2 actions: action 'out' and action 'in'.
-    - if you choose action 'out', your payoff will be {% formfield group.f1 %} and your opponent's payoff will be {% formfield group.s1 %}
-    - if you choose action 'in', your payoff will depend on your opponent's choice.
+        you need to choose between 2 actions: action 'out' and action 'in'.
+        <br>
+        - if you choose action <b>'out'</b>, your payoff will be <b>{{ f1 }}</b> and your opponent's payoff will be
+        <b>{{ s1 }}</b>
+        <br>
+        - if you choose action <b>in</b>, your payoff will depend on your opponent's choice.
+        <br>
 
-    What's your choice?
+        What's your choice?
     </p>
 
-     {% formfield group.in_or_out label="I choose:" %}
+    {% formfield group.in_or_out label="I choose:" %}
 
     {% next_button %}
 

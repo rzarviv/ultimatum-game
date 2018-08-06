@@ -7,11 +7,12 @@
 
 {% block content %}
     <p>
-        you need to choose between 2 actions: action 'out' and action 'in'.
-        - if you choose action 'left', your payoff will be {% formfield group.f2 %} and your opponent's payoff will
-        be {% formfield group.s2 %}
-        - if you choose action 'right', your payoff will be {% formfield group.f3 %} and your opponent's payoff will
-        be {% formfield group.s3 %}
+
+        you need to choose between 2 actions: action 'out' and action 'in'. <br>
+        - if you choose action <b>'left'</b>, your payoff will be <b>{{ f2 }}</b> and your opponent's payoff will
+        be <b>{{ s2 }}</b> <br>
+        - if you choose action <b>'right'</b>, your payoff will be <b>{{ f3 }}</b> and your opponent's payoff will
+        be <b>{{ s3 }}</b> <br>
 
         What's your choice?
     </p>
