@@ -7,12 +7,15 @@
 
 {% block content %}
     <p>
-
-        you need to choose between 2 actions: action 'out' and action 'in'. <br>
+        You are here because your opponent chose {{in_or_out }} .<br>
+        you need to choose between 2 actions: action 'left' and action 'right'.
+        <br>
         - if you choose action <b>'left'</b>, your payoff will be <b>{{ f2 }}</b> and your opponent's payoff will
-        be <b>{{ s2 }}</b> <br>
+        be <b>{{ s2 }}</b>
+        <br>
         - if you choose action <b>'right'</b>, your payoff will be <b>{{ f3 }}</b> and your opponent's payoff will
-        be <b>{{ s3 }}</b> <br>
+        be <b>{{ s3 }}</b>
+        <br>
 
         What's your choice?
     </p>

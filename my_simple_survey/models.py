@@ -11,7 +11,8 @@ doc = """
 This is an extensive form game.
 """
 
-roundNum = 0
+gameNum = 0
+
 
 class Constants(BaseConstants):
     name_in_url = 'my_simple_survey'
@@ -24,12 +25,12 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    f1 = models.IntegerField(label=GAMES[roundNum]['f1'])
-    s1 = models.IntegerField(label=GAMES[roundNum]['s1'])
-    f2 = models.IntegerField(label=GAMES[roundNum]['f2'])
-    s2 = models.IntegerField(label=GAMES[roundNum]['s2'])
-    f3 = models.IntegerField(label=GAMES[roundNum]['f3'])
-    s3 = models.IntegerField(label=GAMES[roundNum]['s3'])
+    f1 = models.IntegerField(label=GAMES[gameNum]['f1'])
+    s1 = models.IntegerField(label=GAMES[gameNum]['s1'])
+    f2 = models.IntegerField(label=GAMES[gameNum]['f2'])
+    s2 = models.IntegerField(label=GAMES[gameNum]['s2'])
+    f3 = models.IntegerField(label=GAMES[gameNum]['f3'])
+    s3 = models.IntegerField(label=GAMES[gameNum]['s3'])
     in_or_out = models.StringField(
         choices=['In', 'Out'],
         widget=widgets.RadioSelect

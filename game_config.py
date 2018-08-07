@@ -20,8 +20,8 @@ GAMES = [
     },
     {
         'game_id': 2,
-        'players': ['player1', 'player3'],
-        'p1': 'player3',
+        'players': ['player1', 'player2'],
+        'p1': 'player2',
         'p2': 'player1',
         'f1': 1,
         's1': 2,
