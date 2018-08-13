@@ -4,7 +4,6 @@ from otree.api import (
     Bot)
 import random
 from settings import SESSION_CONFIGS
-from ultimatum import pages
 
 doc = """
 Ultimatum game with two treatments: direct response and strategy method.
@@ -16,7 +15,7 @@ In the latter treatment, the second player is given a list of all possible offer
 
 class Constants(BaseConstants):
     name_in_url = 'ultimatum'
-    players_per_group = 2
+    players_per_group = None
     num_rounds = next((item for item in SESSION_CONFIGS if item["name"] == "ultimatum"), None)['num_rounds']
 
     instructions_template = 'ultimatum/Instructions.html'
@@ -37,6 +36,8 @@ class Subsession(BaseSubsession):
     def creating_session(self):
         # randomize to treatments
         for g in self.get_groups():
+            g.amount_offered = random.choice(Constants.offer_choices)
+
             if 'use_strategy_method' in self.session.config:
                 g.use_strategy_method = self.session.config['use_strategy_method']
             else:
@@ -54,7 +55,13 @@ class Group(BaseGroup):
         doc="""Whether this group uses strategy method"""
     )
 
-    amount_offered = models.CurrencyField(choices=Constants.offer_choices)
+    reject_interval = models.CurrencyField(choices=Constants.offer_choices)
+
+    indifferent_interval = models.CurrencyField(choices=Constants.offer_choices)
+
+    # amount_offered = models.CurrencyField(choices=Constants.offer_choices)
+
+    amount_offered = models.CurrencyField(initial=random.choice(Constants.offer_choices))
 
     offer_accepted = models.BooleanField(
         doc="if offered amount is accepted (direct response method)"
@@ -74,24 +81,32 @@ class Group(BaseGroup):
     response_100 = make_field(100)
 
     def set_payoffs(self):
-        p1, p2 = self.get_players()
+        # p1, p2 = self.get_players()
+        p1 = self.get_players()[0]
 
-        if self.use_strategy_method:
-            self.offer_accepted = getattr(self, 'response_{}'.format(
-                int(self.amount_offered)))
+        # if self.use_strategy_method:
+        #     self.offer_accepted = getattr(self, 'response_{}'.format(
+        #         int(self.amount_offered)))
 
         if self.offer_accepted:
             if self.round_number > 1:
-                p1.payoff = (Constants.endowment - self.amount_offered) + p1.in_round(self.round_number - 1).payoff
-                p2.payoff = self.amount_offered + p2.in_round(self.round_number - 1).payoff
+                # p1.payoff = (Constants.endowment - self.amount_offered) + p1.in_round(self.round_number - 1).payoff
+                p1.payoff = self.amount_offered + p1.in_round(self.round_number - 1).payoff
+                # p2.payoff = self.amount_offered + p2.in_round(self.round_number - 1).payoff
             else:
-                p1.payoff = (Constants.endowment - self.amount_offered)
-                p2.payoff = self.amount_offered
+                # p1.payoff = (Constants.endowment - self.amount_offered)
+                p1.payoff = self.amount_offered
+                # p2.payoff = self.amount_offered
         else:
-            p1.payoff = Constants.payoff_if_rejected
-            p2.payoff = Constants.payoff_if_rejected
+            if self.round_number > 1:
+                p1.payoff = Constants.payoff_if_rejected + p1.in_round(self.round_number - 1).payoff
+            else:
+                p1.payoff = Constants.payoff_if_rejected
+            # p2.payoff = Constants.payoff_if_rejected
 
 
 class Player(BasePlayer):
-    payoff = models.CurrencyField(initial=c(0))
-
+    payoff = models.CurrencyField(initial=0)
+    reject = models.CurrencyField(initial=0)
+    indifferent = models.CurrencyField(initial=0)
+    accept = models.CurrencyField(initial=100)
