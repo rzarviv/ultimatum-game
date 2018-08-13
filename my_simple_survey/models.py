@@ -1,6 +1,5 @@
 from otree.api import (
     models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
-    Currency as c, currency_range
 )
 
 from game_config import GAMES
@@ -12,6 +11,7 @@ This is an extensive form game.
 """
 
 gameNum = 0
+currentGame = GAMES[gameNum]
 
 
 class Constants(BaseConstants):
@@ -31,14 +31,30 @@ class Group(BaseGroup):
     s2 = models.IntegerField(label=GAMES[gameNum]['s2'])
     f3 = models.IntegerField(label=GAMES[gameNum]['f3'])
     s3 = models.IntegerField(label=GAMES[gameNum]['s3'])
+
     in_or_out = models.StringField(
         choices=['In', 'Out'],
         widget=widgets.RadioSelect
     )
+
     left_or_right = models.StringField(
         choices=['Left', 'Right'],
         widget=widgets.RadioSelect
     )
 
+
 class Player(BasePlayer):
-    identity = models.StringField()
+    # identity = models.StringField()
+    total_points = models.IntegerField()
+
+    def role(self):
+        if self.participant.label == GAMES[gameNum]['p1'] :
+            return 'bidder'
+        else:
+            return 'responder'
+
+    def get_partner(self):
+        return self.get_others_in_group()[0]
+
+    def add_points(self,points):
+        self.total_points += points

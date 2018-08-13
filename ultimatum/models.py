@@ -1,8 +1,10 @@
 from otree.api import (
     models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
-    Currency as c, currency_range
-)
+    Currency as c, currency_range,
+    Bot)
 import random
+from settings import SESSION_CONFIGS
+from ultimatum import pages
 
 doc = """
 Ultimatum game with two treatments: direct response and strategy method.
@@ -15,7 +17,7 @@ In the latter treatment, the second player is given a list of all possible offer
 class Constants(BaseConstants):
     name_in_url = 'ultimatum'
     players_per_group = 2
-    num_rounds = 1
+    num_rounds = next((item for item in SESSION_CONFIGS if item["name"] == "ultimatum"), None)['num_rounds']
 
     instructions_template = 'ultimatum/Instructions.html'
 
@@ -71,7 +73,6 @@ class Group(BaseGroup):
     response_90 = make_field(90)
     response_100 = make_field(100)
 
-
     def set_payoffs(self):
         p1, p2 = self.get_players()
 
@@ -80,12 +81,17 @@ class Group(BaseGroup):
                 int(self.amount_offered)))
 
         if self.offer_accepted:
-            p1.payoff = Constants.endowment - self.amount_offered
-            p2.payoff = self.amount_offered
+            if self.round_number > 1:
+                p1.payoff = (Constants.endowment - self.amount_offered) + p1.in_round(self.round_number - 1).payoff
+                p2.payoff = self.amount_offered + p2.in_round(self.round_number - 1).payoff
+            else:
+                p1.payoff = (Constants.endowment - self.amount_offered)
+                p2.payoff = self.amount_offered
         else:
             p1.payoff = Constants.payoff_if_rejected
             p2.payoff = Constants.payoff_if_rejected
 
 
 class Player(BasePlayer):
-    pass
+    payoff = models.CurrencyField(initial=c(0))
+

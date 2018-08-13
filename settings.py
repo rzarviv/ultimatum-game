@@ -1,5 +1,6 @@
 from os import environ
 from game_config import GAMES
+
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
 # in SESSION_CONFIGS, except those that explicitly override it.
 # the session config can be accessed from methods in your apps as self.session.config,
@@ -38,7 +39,14 @@ SESSION_CONFIGS = [
         'name': 'my_simple_survey',
         'num_demo_participants': 4,
         'app_sequence': ['my_simple_survey'],
-        #'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
+        # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
+    },
+    {
+        'name': 'ultimatum',
+        'display_name': "Ultimatum (randomized: strategy vs. direct response)",
+        'num_demo_participants': 2,
+        'app_sequence': ['ultimatum'],
+        'num_rounds': 4,
     },
     # other session configs go here ...
 ]
@@ -67,6 +75,10 @@ ROOMS = [
         'name': 'my_simple_survey',
         'display_name': 'Room for my simple survey',
         'participant_label_file': 'game_subjects.txt',
+    },
+    {
+        'name': 'ultimatum',
+        'display_name': 'Room for ultimatum game',
     },
 ]
 
