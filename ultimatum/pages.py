@@ -25,20 +25,31 @@ class WaitForProposer(WaitPage):
 
 class ChooseRanges(Page):
     form_model = 'player'
-    form_fields = ['reject_interval', 'indifferent_interval']
+    form_fields = ['right_reject', 'left_indifferent', 'right_indifferent', 'left_accept']
 
     def is_displayed(self):
         return self.round_number == 1
         # return self.player.id_in_group == 1 and self.round_number == 1
 
+# TODO: change the error messages
     def error_message(self, values):
         # print('values are', values)
-        if values["indifferent_interval"] < values["reject_interval"]:
-            return 'The indifferent amount cannot be less than the reject amount'
+        msg = ""
+        if values["left_indifferent"] < values["right_reject"]:
+            msg += " 1"
+        if values["left_accept"] < values["right_indifferent"]:
+            msg += " 2"
+        if msg != "":
+            return msg
+            # return 'The indifferent amount cannot be less than the reject amount'
 
     def before_next_page(self):
-        self.player.reject = self.player.reject_interval
-        self.player.indifferent = self.player.indifferent_interval
+        print("left_indifferent :" + str(self.player.left_indifferent) +
+              "left_accept :" + str(self.player.left_accept) +
+              "right_indifferent :" + str(self.player.right_indifferent) +
+              "right_reject" + str(self.player.right_reject))
+        # self.player.reject = self.player.reject_interval
+        # self.player.indifferent = self.player.indifferent_interval
         # print("reject interval is up to ", self.player.reject)
         # print("indifferent interval is up to ", self.player.indifferent)
         # print("reject interval is up to ", self.player.accept)

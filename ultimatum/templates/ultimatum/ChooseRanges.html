@@ -6,14 +6,98 @@
 {% endblock %}
 
 {% block content %}
+    {#    <p>#}
+    {#        Up to which amount of points will you <strong>reject</strong> the offer?#}
+    {#        {% formfield player.reject_interval %}#}
+    {#    </p>#}
+    {#    <p>#}
+    {#        Up to which amount of points will you be <strong>indifferent</strong> about the offer?#}
+    {#        {% formfield player.indifferent_interval %}#}
+    {#    </p>#}
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#reject-range").slider({
+                range: "max",
+                min: 0,
+                max: 100,
+                values: [100],
+                slide: function (event, ui) {
+                    $("#reject_amount").val("$0" + '-$' + ui.values[0]);
+                    $("#id_right_reject").val(ui.values[0]);
+                }
+            });
+            $("#reject_amount").val("$0" + '-$' + $("#reject-range").slider("values", 0));
+        });
+
+        $(function () {
+            $("#indifferent-range").slider({
+                range: true,
+                min: 0,
+                max: 100,
+                values: [0, 100],
+                slide: function (event, ui) {
+                    $("#indifferent_amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                    $("#id_left_indifferent").val(ui.values[0]);
+                    $("#id_right_indifferent").val(ui.values[1]);
+                }
+            });
+            $("#indifferent_amount").val("$" + $("#indifferent-range").slider("values", 0) +
+                " - $" + $("#indifferent-range").slider("values", 1));
+        });
+
+        $(function () {
+            $("#accept-range").slider({
+                range: "min",
+                min: 0,
+                max: 100,
+                values: [0],
+                slide: function (event, ui) {
+                    $("#accept_amount").val("$" + ui.values[0] + " - $100");
+                    $("#id_left_accept").val(ui.values[0]);
+                }
+            });
+            $("#accept_amount").val("$" + $("#accept-range").slider("values", 0) + " - $100");
+        });
+    </script>
+
+
     <p>
-        Up to which amount of points will you <strong>reject</strong> the offer?
-        {% formfield player.reject_interval %}
+        <label for="reject_amount">Reject range:</label>
+        <input type="text" id="reject_amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
     </p>
+
+    <div id="reject-range"></div>
+    {{ form.right_reject.as_hidden }}
+
+    <br>
+    <br>
+
     <p>
-        Up to which amount of points will you be <strong>indifferent</strong> about the offer?
-        {% formfield player.indifferent_interval %}
+        <label for="indifferent_amount">Indifferent range:</label>
+        <input type="text" id="indifferent_amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
     </p>
+
+    <div id="indifferent-range"></div>
+    {{ form.left_indifferent.as_hidden }}
+    {{ form.right_indifferent.as_hidden }}
+
+    <br>
+    <br>
+
+    <p>
+        <label for="accept_amount">Accept range:</label>
+        <input type="text" id="accept_amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+
+    <div id="accept-range"></div>
+    {{ form.left_accept.as_hidden }}
+
+    <br>
+    <br>
+
 
     {% next_button %}
 

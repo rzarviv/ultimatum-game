@@ -124,3 +124,13 @@ class Player(BasePlayer):
     offer_accepted = models.BooleanField(
         doc="if offered amount is accepted (direct response method)"
     )
+
+    # left_reject = models.IntegerField()
+    right_reject = models.IntegerField()
+    left_indifferent = models.IntegerField()
+    right_indifferent = models.IntegerField()
+    left_accept = models.IntegerField()
+    # right_accept = models.IntegerField()
+
+    left = models.IntegerField()
+    right = models.IntegerField()
