@@ -2,17 +2,17 @@
 {% load otree static %}
 
 {% block title %}
-    choose intervals
+    Choose Intervals
 {% endblock %}
 
 {% block content %}
     <p>
-        up to which amount of points will you <strong>reject</strong> the offer?
-        {% formfield group.reject_interval %}
+        Up to which amount of points will you <strong>reject</strong> the offer?
+        {% formfield player.reject_interval %}
     </p>
     <p>
-        up to which amount of points will you be <strong>indifferent</strong> about the offer?
-        {% formfield group.indifferent_interval %}
+        Up to which amount of points will you be <strong>indifferent</strong> about the offer?
+        {% formfield player.indifferent_interval %}
     </p>
 
     {% next_button %}

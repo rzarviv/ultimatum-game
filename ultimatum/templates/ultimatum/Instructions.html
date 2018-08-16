@@ -37,18 +37,24 @@
         </h4>
 
         <p>
-            The proposer has the following {{ Constants.offer_choices_count }}
-            options on how to divide the {{ Constants.endowment }} between the
-            two players.
+            The proposer has 101 options on how to divide the 100 points between the two players. For example:
+            {#            The proposer has the following {{ Constants.offer_choices_count }}#}
+            {#            options on how to divide the {{ Constants.endowment }} between the#}
+            {#            two players. For example : #}
+            <br> 0 for the responder (the proposer keeps 100)
+            <br> 5 for the responder (the proposer keeps 95)
+            <br> 37 for the responder (the proposer keeps 63)
+            <br> 100 for the responder (the proposer keeps 0)
+            <br> etc.
         </p>
 
-        <ol>
-            {% for give, keep in Constants.keep_give_amounts %}
-
-                <li>{{ give }} for the responder (the proposer keeps {{ keep }})</li>
-
-            {% endfor %}
-        </ol>
+        {#        <ol>#}
+        {#            {% for give, keep in Constants.keep_give_amounts %}#}
+        {##}
+        {#                <li>{{ give }} for the responder (the proposer keeps {{ keep }})</li>#}
+        {##}
+        {#            {% endfor %}#}
+        {#        </ol>#}
 
         <h4 class="panel-sub-heading">
             Responder's role

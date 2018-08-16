@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-        Your role and decision
+    Your role and decision
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,11 @@
     </p>
 
     <p>
-        The other player has offered you {{ group.amount_offered }}.
+        The other player has offered you {{ player.amount_offered }}.
+    </p>
+
+    <p>
+        <strong>{{ player.message }}</strong>
     </p>
 
     <p><b>Do you wish to accept the offer?</b></p>
@@ -24,6 +28,9 @@
             No
         </button>
     </div>
+
+    <br>
+    <br>
 
     {% include Constants.instructions_template %}
 
