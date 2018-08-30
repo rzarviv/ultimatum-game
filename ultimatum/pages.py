@@ -25,34 +25,23 @@ class WaitForProposer(WaitPage):
 
 class ChooseRanges(Page):
     form_model = 'player'
-    form_fields = ['right_reject', 'left_indifferent', 'right_indifferent', 'left_accept']
+    form_fields = ['min_accept', 'max_reject']
 
     def is_displayed(self):
         return self.round_number == 1
         # return self.player.id_in_group == 1 and self.round_number == 1
 
-# TODO: change the error messages
     def error_message(self, values):
         # print('values are', values)
-        msg = ""
-        if values["left_indifferent"] < values["right_reject"]:
-            msg += " 1"
-        if values["left_accept"] < values["right_indifferent"]:
-            msg += " 2"
-        if msg != "":
-            return msg
-            # return 'The indifferent amount cannot be less than the reject amount'
+        if values["min_accept"] < values["max_reject"]:
+            return "error"
 
     def before_next_page(self):
-        print("left_indifferent :" + str(self.player.left_indifferent) +
-              "left_accept :" + str(self.player.left_accept) +
-              "right_indifferent :" + str(self.player.right_indifferent) +
-              "right_reject" + str(self.player.right_reject))
-        # self.player.reject = self.player.reject_interval
-        # self.player.indifferent = self.player.indifferent_interval
-        # print("reject interval is up to ", self.player.reject)
-        # print("indifferent interval is up to ", self.player.indifferent)
-        # print("reject interval is up to ", self.player.accept)
+        print("min_accept :" + str(self.player.min_accept) +
+              "max_reject :" + str(self.player.max_reject) +
+              " sessions" + str(self.session.__dict__['code']))
+
+        # put sql commands to store user's choices
 
 
 class Accept(Page):

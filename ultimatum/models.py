@@ -1,5 +1,5 @@
 from otree.api import (
-    models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
+    models, widgets, BaseConstants, BaseSubsession ,BaseGroup, BasePlayer,
     Currency as c, currency_range,
 )
 import random
@@ -74,17 +74,17 @@ class Group(BaseGroup):
     # message = models.StringField(initial='')
 
     # for strategy method, see the make_field function above
-    response_0 = make_field(0)
-    response_10 = make_field(10)
-    response_20 = make_field(20)
-    response_30 = make_field(30)
-    response_40 = make_field(40)
-    response_50 = make_field(50)
-    response_60 = make_field(60)
-    response_70 = make_field(70)
-    response_80 = make_field(80)
-    response_90 = make_field(90)
-    response_100 = make_field(100)
+    # response_0 = make_field(0)
+    # response_10 = make_field(10)
+    # response_20 = make_field(20)
+    # response_30 = make_field(30)
+    # response_40 = make_field(40)
+    # response_50 = make_field(50)
+    # response_60 = make_field(60)
+    # response_70 = make_field(70)
+    # response_80 = make_field(80)
+    # response_90 = make_field(90)
+    # response_100 = make_field(100)
 
     def set_payoffs(self):
         # p1, p2 = self.get_players()
@@ -114,23 +114,22 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     payoff = models.CurrencyField(initial=0)
-    reject = models.CurrencyField(initial=0)
-    indifferent = models.CurrencyField(initial=0)
-    accept = models.CurrencyField(initial=100)
     amount_offered = models.CurrencyField(initial=random.choice(Constants.offer_choices))
     message = models.StringField(initial='')
-    reject_interval = models.CurrencyField(choices=Constants.offer_choices)
-    indifferent_interval = models.CurrencyField(choices=Constants.offer_choices)
     offer_accepted = models.BooleanField(
         doc="if offered amount is accepted (direct response method)"
     )
+    min_accept = models.CurrencyField()
+    max_reject = models.CurrencyField()
 
-    # left_reject = models.IntegerField()
-    right_reject = models.IntegerField()
-    left_indifferent = models.IntegerField()
-    right_indifferent = models.IntegerField()
-    left_accept = models.IntegerField()
-    # right_accept = models.IntegerField()
+    # right_reject = models.IntegerField()
+    # left_indifferent = models.IntegerField()
+    # right_indifferent = models.IntegerField()
+    # left_accept = models.IntegerField()
 
-    left = models.IntegerField()
-    right = models.IntegerField()
+    # reject = models.CurrencyField(initial=0)
+    # indifferent = models.CurrencyField(initial=0)
+    # accept = models.CurrencyField(initial=100)
+
+    # reject_interval = models.CurrencyField(choices=Constants.offer_choices)
+    # indifferent_interval = models.CurrencyField(choices=Constants.offer_choices)

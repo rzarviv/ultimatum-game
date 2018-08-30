@@ -46,7 +46,7 @@ SESSION_CONFIGS = [
         'display_name': "Ultimatum (randomized: strategy vs. direct response)",
         'num_demo_participants': 2,
         'app_sequence': ['ultimatum'],
-        'num_rounds': 4,
+        'num_rounds': 3,
     },
     # other session configs go here ...
 ]
