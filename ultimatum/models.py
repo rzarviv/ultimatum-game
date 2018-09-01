@@ -1,5 +1,5 @@
 from otree.api import (
-    models, widgets, BaseConstants, BaseSubsession ,BaseGroup, BasePlayer,
+    models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
     Currency as c, currency_range,
 )
 import random
@@ -42,6 +42,7 @@ class Subsession(BaseSubsession):
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.message = random.choice(Constants.messages)
+            p.complex_mode = random.choice([True, False])
 
             # randomize to treatments
             # for g in self.get_groups():
@@ -121,6 +122,7 @@ class Player(BasePlayer):
     )
     min_accept = models.CurrencyField()
     max_reject = models.CurrencyField()
+    complex_mode = models.BooleanField()
 
     # right_reject = models.IntegerField()
     # left_indifferent = models.IntegerField()

@@ -15,9 +15,11 @@
         The other player has offered you {{ player.amount_offered }}.
     </p>
 
+    {% if player.complex_mode %}
     <p>
         <strong>{{ player.message }}</strong>
     </p>
+    {% endif %}
 
     <p><b>Do you wish to accept the offer?</b></p>
     <div>
