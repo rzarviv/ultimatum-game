@@ -3,7 +3,7 @@ from otree.api import (
     Currency as c, currency_range,
 )
 import random
-from settings import SESSION_CONFIGS
+from ultimatum_config import CONFIG
 
 doc = """
 Ultimatum game with two treatments: direct response and strategy method.
@@ -16,7 +16,8 @@ In the latter treatment, the second player is given a list of all possible offer
 class Constants(BaseConstants):
     name_in_url = 'ultimatum'
     players_per_group = None
-    num_rounds = next((item for item in SESSION_CONFIGS if item["name"] == "ultimatum"), None)['num_rounds']
+    # number of rounds is configured in 'ultimatum_config.py'
+    num_rounds = CONFIG['num_rounds']
 
     instructions_template = 'ultimatum/Instructions.html'
 
@@ -24,10 +25,15 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    bad_offer_message = 'We think the offer is not good and you should reject it.'
-    medium_offer_message = 'We think the offer is not so good, but not so bad.'
-    good_offer_message = 'We think the offer is good and you should accept it.'
-    messages = [good_offer_message, medium_offer_message, bad_offer_message]
+    # bad_offer_message = 'We think the offer is not good and you should reject it.'
+    # medium_offer_message = 'We think the offer is not so good, but not so bad.'
+    # good_offer_message = 'We think the offer is good and you should accept it.'
+
+    selfish_message = "Our system indicates that you'll probably get a very selfish offer."
+    generous_message = "Our system indicates that you'll probably get a very generous offer."
+    average_message = "Our system indicates that you'll probably get an average offer."
+
+    messages = [selfish_message, generous_message, average_message]
 
     offer_choices = currency_range(0, endowment, offer_increment)
     offer_choices_count = len(offer_choices)
@@ -42,7 +48,8 @@ class Subsession(BaseSubsession):
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.message = random.choice(Constants.messages)
-            p.complex_mode = random.choice([True, False])
+            p.complex_mode = CONFIG['complex_mode']
+            # p.complex_mode = random.choice([True, False])
 
             # randomize to treatments
             # for g in self.get_groups():
@@ -111,6 +118,11 @@ class Group(BaseGroup):
                 else:
                     p.payoff = Constants.payoff_if_rejected
                 # p2.payoff = Constants.payoff_if_rejected
+
+    def set_messages(self):
+        for p in self.get_players():
+            if p.complex_mode:
+                p.message = random.choice(Constants.messages)
 
 
 class Player(BasePlayer):

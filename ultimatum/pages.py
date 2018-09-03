@@ -3,9 +3,12 @@ from ._builtin import Page, WaitPage
 from .models import Constants
 import MySQLdb as sql
 import datetime
+from ultimatum_config import CONFIG
 
-username = 'root'
-password = 'royzerbib10'
+username = ''
+password = ''
+schema_name = ''
+
 
 # TODO: fix the pages' view according to kobi's mail : COMPLEX configuration (with message).
 # There are x types of messages (for now let's say 2 types). Message 1 : You will get a selfish offer. Message 2: You will get a kind offer.
@@ -18,6 +21,12 @@ password = 'royzerbib10'
 #
 # etc...
 
+def trim_and_remove_spaces(player_attribute):
+    space = ' '
+    empty_string = ''
+    return str(player_attribute)[:-7].replace(space, empty_string)
+
+
 class Introduction(Page):
     # timeout_seconds = 600
     def is_displayed(self):
@@ -25,9 +34,14 @@ class Introduction(Page):
 
     def before_next_page(self):
 
+        global username, password, schema_name
+        username = CONFIG['db_username']
+        password = CONFIG['db_password']
+        schema_name = CONFIG['db_schema_name']
+
         db = sql.connect("localhost", username, password)
         cursor = db.cursor()
-        create_database = 'CREATE DATABASE IF NOT EXISTS usersData'
+        create_database = 'CREATE DATABASE IF NOT EXISTS ' + schema_name
 
         try:
             cursor.execute(create_database)
@@ -38,21 +52,21 @@ class Introduction(Page):
             db.rollback()
 
         db.close()
-        db = sql.connect("localhost", username, password, "usersData")
+        db = sql.connect("localhost", username, password, schema_name)
         cursor = db.cursor()
         create_table = """CREATE TABLE IF NOT EXISTS ALL_DATA(
-                          SESSION_CODE  CHAR(30) NOT NULL,
-                          ROUND  INT NOT NULL,
-                          PLAYER_ID INT NOT NULL,
-                          COMPLEX CHAR(1) NOT NULL,
-                          MIN_ACCEPT INT NOT NULL,
-                          MAX_REJECT INT NOT NULL,
-                          AMOUNT_OFFERED INT NOT NULL,
-                          MESSAGE CHAR(100),
-                          OFFER_ACCEPTED CHAR(1) NOT NULL,
-                          TIME_STAMP TIMESTAMP NOT NULL,
-                          CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID))
-                          """
+                                  SESSION_CODE  CHAR(30) NOT NULL,
+                                  ROUND  INT NOT NULL,
+                                  PLAYER_ID INT NOT NULL,
+                                  COMPLEX CHAR(1) NOT NULL,
+                                  MIN_ACCEPT INT NOT NULL,
+                                  MAX_REJECT INT NOT NULL,
+                                  AMOUNT_OFFERED INT NOT NULL,
+                                  MESSAGE CHAR(100),
+                                  OFFER_ACCEPTED CHAR(1) NOT NULL,
+                                  TIME_STAMP TIMESTAMP NOT NULL,
+                                  CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID))
+                                  """
         try:
             cursor.execute(create_table)
             db.commit()
@@ -120,10 +134,14 @@ class Accept(Page):
             self.player.max_reject = self.player.in_round(round_num - 1).max_reject
             self.player.min_accept = self.player.in_round(round_num - 1).min_accept
 
-        min_accept = int(str(self.player.min_accept)[:-7].replace(' ', ''))
-        max_reject = int(str(self.player.max_reject)[:-7].replace(' ', ''))
-        amount_offered = int(str(self.player.amount_offered)[:-7].replace(' ', ''))
-        message = self.player.message
+        min_accept = int(trim_and_remove_spaces(self.player.min_accept))
+        max_reject = int(trim_and_remove_spaces(self.player.max_reject))
+        amount_offered = int(trim_and_remove_spaces(self.player.amount_offered))
+
+        if self.player.complex_mode:
+            message = self.player.message
+        else:
+            message = ""
 
         if self.player.offer_accepted:
             offer_accepted = str('Y')
@@ -132,7 +150,7 @@ class Accept(Page):
 
         time_stamp = str(datetime.datetime.utcnow())
 
-        db = sql.connect("localhost", username, password, "usersData")
+        db = sql.connect("localhost", username, password, schema_name)
         cursor = db.cursor()
         insert = """INSERT INTO ALL_DATA(
                          SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, MIN_ACCEPT, MAX_REJECT, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
@@ -148,15 +166,16 @@ class Accept(Page):
             db.rollback()
 
         self.group.set_payoffs()
+        self.group.set_messages()
 
 
-class AcceptStrategy(Page):
-    form_model = 'group'
-    form_fields = ['response_{}'.format(int(i)) for i in
-                   Constants.offer_choices]
-
-    def is_displayed(self):
-        return self.player.id_in_group == 2 and self.group.use_strategy_method
+# class AcceptStrategy(Page):
+#     form_model = 'group'
+#     form_fields = ['response_{}'.format(int(i)) for i in
+#                    Constants.offer_choices]
+#
+#     def is_displayed(self):
+#         return self.player.id_in_group == 2 and self.group.use_strategy_method
 
 
 class Results(Page):

@@ -5,10 +5,51 @@
     Choose Intervals
 {% endblock %}
 
+{% block app_styles %}
+
+    <style type="text/css">
+        #reject_amount, #accept_amount {
+            border: 0;
+            color: #f6931f;
+            font-weight: bold;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .indifferent {
+            border: 0;
+            color: #f6931f;
+            font-weight: bold;
+            text-align: center;
+            width: 15%;
+        }
+
+        .slider_right {
+            display: inline-block;
+            float: right
+        }
+
+        .slider_left {
+            display: inline-block;
+            float: left
+        }
+
+        #message {
+            font-size: 22px;
+            color: crimson
+        }
+    </style>
+
+{% endblock %}
+
 {% block content %}
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script>
         $(function () {
             $("#reject-range").slider({
@@ -40,21 +81,19 @@
     </script>
 
 
-
+    <br>
     <label>What is the biggest offer you would ABSOLUTELY reject?</label>
     <br>
     <br>
-    <input class="reject_amount" readonly
-           style="border:0; color:#f6931f; font-weight:bold;
-           position: relative; top: 50%;left: 50%; text-align: center;
-           transform: translate(-50%, -50%);">
+    <input id="reject_amount" class="reject_amount" readonly>
+
     <br>
 
     <div>
         <div id="reject-range"></div>
         {{ form.max_reject.as_hidden }}
-        <span style="display: inline-block; float: left">$0</span>
-        <span style="display: inline-block; float: right">$100</span>
+        <span class="slider_left">$0</span>
+        <span class="slider_right">$100</span>
     </div>
 
 
@@ -64,25 +103,22 @@
     <label>What is the smallest offer you would ABSOLUTELY accept?</label>
     <br>
     <br>
-    <input class="accept_amount" readonly
-           style="border:0; color:#f6931f; font-weight:bold;
-           position: relative; top: 50%;left: 50%; text-align: center;
-           transform: translate(-50%, -50%);">
+    <input id="accept_amount" class="accept_amount" readonly>
     <br>
 
     <div>
         <div id="accept-range"></div>
         {{ form.min_accept.as_hidden }}
-        <span style="display: inline-block; float: left">$0</span>
-        <span style="display: inline-block; float: right">$100</span>
+        <span class="slider_left">$0</span>
+        <span class="slider_right">$100</span>
     </div>
 
     <br>
     <br>
 
-    <label>Yoy are indifferent between
-        <input readonly class="reject_amount" style="border:0; color:#f6931f; font-weight:bold; text-align: center;"></input> and
-        <input readonly class="accept_amount" style="border:0; color:#f6931f; font-weight:bold; text-align: center;"></input></label>
+    <label>You are indifferent between
+        <input readonly class="reject_amount indifferent"> and
+        <input readonly class="accept_amount indifferent"></label>
     <br>
     <br>
 

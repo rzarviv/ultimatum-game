@@ -7,19 +7,28 @@
 
 {% block content %}
 
+    <style type="text/css">
+        #message {
+            font-size: 22px;
+            color: crimson
+        }
+    </style>
+
     <p>
         You are the <strong>responder</strong>.
     </p>
 
+    {% if player.complex_mode %}
+
+        <p id="message">
+            <strong> Please note: {{ player.message }}</strong>
+        </p>
+
+    {% endif %}
+
     <p>
         The other player has offered you {{ player.amount_offered }}.
     </p>
-
-    {% if player.complex_mode %}
-    <p>
-        <strong>{{ player.message }}</strong>
-    </p>
-    {% endif %}
 
     <p><b>Do you wish to accept the offer?</b></p>
     <div>

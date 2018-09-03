@@ -53,15 +53,10 @@
         </h4>
 
         <p>
-            {% if not group.use_strategy_method %}
-                The responder can either accept or reject the offer.
-            {% else %}
-                While the proposer makes the offer, the responder can select
-                which {{ Constants.offer_choices_count }} offers stated above
-                to accept or reject.
-                After the proposer has made the offer, it will be either
-                accepted or rejected according to the responder's choices.
-            {% endif %}
+            While the proposer makes the offer, the responder need to select the <strong>minimal amount</strong> of
+            points he will <strong>accept</strong> and the <strong>maximal amount</strong> of points he will <strong>reject</strong>.
+            After the proposer has made the offer, it will be either
+            accepted or rejected according to the responder's choices.
         </p>
 
         <h4 class="panel-sub-heading">
@@ -69,17 +64,10 @@
         </h4>
 
         <p>
-            {% if not group.use_strategy_method %}
-                In the end, when both players have made their decision, a
-                results page will be displayed.
-                Here the offer will be displayed once more, and whether it was
-                accepted or rejected.
-            {% else %}
-                A results page will be displayed once both players have made
-                their decisions and those decisions have been implemented.
-                Here, it will be shown whether the offer was accepted or
-                rejected.
-            {% endif %}
+            A results page will be displayed once both players have made
+            their decisions and those decisions have been implemented.
+            Here, it will be shown whether the offer was accepted or
+            rejected.
         </p>
 
 

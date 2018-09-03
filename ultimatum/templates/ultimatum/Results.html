@@ -6,26 +6,27 @@
 {% endblock %}
 
 {% block content %}
-    <p>
-{#        {% if player.id_in_group == 1 %}#}
-            You were given {{ Constants.endowment }}, out of which you offered {{ player.amount_offered }} to the other player.
-            {% if player.offer_accepted %}
-                Your offer was accepted.
-            {% else %}
-                 Your offer was rejected.
-            {% endif %}
-{#        {% else %}#}
-{#            The other player offered you {{ player.amount_offered }} out of the total {{ Constants.endowment }}.#}
-{#            {% if player.offer_accepted %}#}
-{#                You accepted this offer.#}
-{#            {% else %}#}
-{#                You rejected this offer.#}
-{#            {% endif %}#}
-{#        {% endif %}#}
-    </p>
 
-    <p>
-        Your total payoff is therefore {{ player.payoff }}.
+    {#        {% if player.id_in_group == 1 %}#}
+    You and the proposer were given {{ Constants.endowment }} in this round, out of which the other player offered
+    you <strong>{{ player.amount_offered }}</strong>.
+    <br>
+
+    {% if player.offer_accepted %}
+        You <strong>accepted</strong> the offer,
+    {% else %}
+        You <strong>rejected</strong> the offer,
+    {% endif %}
+
+    therefore your total payoff (in all rounds) is <strong>{{ player.payoff }}</strong>.
+    {#        {% else %}#}
+    {#            The other player offered you {{ player.amount_offered }} out of the total {{ Constants.endowment }}.#}
+    {#            {% if player.offer_accepted %}#}
+    {#                You accepted this offer.#}
+    {#            {% else %}#}
+    {#                You rejected this offer.#}
+    {#            {% endif %}#}
+    {#        {% endif %}#}
     </p>
 
     {% next_button %}

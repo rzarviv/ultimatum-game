@@ -44,9 +44,8 @@ SESSION_CONFIGS = [
     {
         'name': 'ultimatum',
         'display_name': "Ultimatum (randomized: strategy vs. direct response)",
-        'num_demo_participants': 2,
+        'num_demo_participants': 1,
         'app_sequence': ['ultimatum'],
-        'num_rounds': 3,
     },
     # other session configs go here ...
 ]
