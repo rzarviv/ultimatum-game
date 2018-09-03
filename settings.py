@@ -35,12 +35,12 @@ SESSION_CONFIGS = [
     #     'num_demo_participants': 1,
     #     'app_sequence': ['quiz'],
     # },
-    {
-        'name': 'my_simple_survey',
-        'num_demo_participants': 4,
-        'app_sequence': ['my_simple_survey'],
-        # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
-    },
+    # {
+    #     'name': 'my_simple_survey',
+    #     'num_demo_participants': 4,
+    #     'app_sequence': ['my_simple_survey'],
+    #     # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
+    # },
     {
         'name': 'ultimatum',
         'display_name': "Ultimatum (randomized: strategy vs. direct response)",
