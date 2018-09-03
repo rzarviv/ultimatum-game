@@ -36,11 +36,6 @@
             display: inline-block;
             float: left
         }
-
-        #message {
-            font-size: 22px;
-            color: crimson
-        }
     </style>
 
 {% endblock %}
@@ -58,11 +53,11 @@
                 max: 100,
                 values: [100],
                 slide: function (event, ui) {
-                    $(".reject_amount").val('$' + ui.values[0]);
-                    $("#id_max_reject").val(ui.values[0]);
+                    $(".reject_amount").val('$' + ui.values[0]); // renders the current value when moving the handle
+                    $("#id_max_reject").val(ui.values[0]); //pass the value from the slider to the player's attribute based on the model field name
                 }
             });
-            $(".reject_amount").val('$' + $("#reject-range").slider("values", 0));
+            $(".reject_amount").val('$' + $("#reject-range").slider("values", 0)); // renders the slider's value
         });
 
         $(function () {
@@ -72,11 +67,11 @@
                 max: 100,
                 values: [0],
                 slide: function (event, ui) {
-                    $(".accept_amount").val("$" + ui.values[0]);
-                    $("#id_min_accept").val(ui.values[0]);
+                    $(".accept_amount").val("$" + ui.values[0]); // renders the slider's current value when moving the handle
+                    $("#id_min_accept").val(ui.values[0]); //pass the value from the slider to the player's attribute based on the model field name
                 }
             });
-            $(".accept_amount").val("$" + $("#accept-range").slider("values", 0));
+            $(".accept_amount").val("$" + $("#accept-range").slider("values", 0)); // renders the slider's value
         });
     </script>
 
@@ -85,12 +80,15 @@
     <label>What is the biggest offer you would ABSOLUTELY reject?</label>
     <br>
     <br>
+    {# displays the biggest offer the player would absolutely reject #}
     <input id="reject_amount" class="reject_amount" readonly>
 
     <br>
 
     <div>
+        {# this div is the slider for the biggest offer the player would absolutely reject #}
         <div id="reject-range"></div>
+        {# render the input fields as hidden to pass the value there from the slider using their id, based on the model field name #}
         {{ form.max_reject.as_hidden }}
         <span class="slider_left">$0</span>
         <span class="slider_right">$100</span>
@@ -103,11 +101,14 @@
     <label>What is the smallest offer you would ABSOLUTELY accept?</label>
     <br>
     <br>
+    {# displays the smallest offer the player would absolutely accept #}
     <input id="accept_amount" class="accept_amount" readonly>
     <br>
 
     <div>
+        {# this div is the slider for the biggest offer the player would absolutely reject #}
         <div id="accept-range"></div>
+        {# render the input fields as hidden to pass the value there from the slider using their id, based on the model field name #}
         {{ form.min_accept.as_hidden }}
         <span class="slider_left">$0</span>
         <span class="slider_right">$100</span>
@@ -123,5 +124,7 @@
     <br>
 
     {% next_button %}
+
+    {% include Constants.instructions_template %}
 
 {% endblock %}

@@ -71,11 +71,6 @@ ROOMS = [
         'display_name': 'Room for live demo (no participant labels)',
     },
     {
-        'name': 'my_simple_survey',
-        'display_name': 'Room for my simple survey',
-        'participant_label_file': 'game_subjects.txt',
-    },
-    {
         'name': 'ultimatum',
         'display_name': 'Room for ultimatum game',
     },
