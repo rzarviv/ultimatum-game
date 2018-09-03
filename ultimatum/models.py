@@ -23,9 +23,9 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    selfish_message = "Our system indicates that you'll probably get a very selfish offer."
-    generous_message = "Our system indicates that you'll probably get a very generous offer."
-    average_message = "Our system indicates that you'll probably get an average offer."
+    selfish_message = "Our system indicates that you'll probably get a very selfish offers."
+    generous_message = "Our system indicates that you'll probably get a very generous offers."
+    average_message = "Our system indicates that you'll probably get an average offers."
     messages = [selfish_message, generous_message, average_message]
 
     #  range of all the offers a player can get
@@ -35,17 +35,13 @@ class Constants(BaseConstants):
 
 class Subsession(BaseSubsession):
 
-    # If the app has multiple rounds, creating_session gets run multiple times consecutively
+    # if the app has multiple rounds, creating_session gets run multiple times consecutively
     def creating_session(self):
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.complex_mode = CONFIG['complex_mode']
             if p.complex_mode:
                 p.message = random.choice(Constants.messages)
-            # reserve the min_accept and max_reject attributes that getting zeroed in every round.
-            if self.round_number > 1:
-                p.max_reject = p.in_round(self.round_number - 1).max_reject
-                p.min_accept = p.in_round(self.round_number - 1).min_accept
 
 
 class Group(BaseGroup):

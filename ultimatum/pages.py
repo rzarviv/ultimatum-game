@@ -82,7 +82,6 @@ class ChooseRanges(Page):
 def store_players_data(session_code, round_num, player_id,
                        is_complex, min_accept, max_reject,
                        amount_offered, message, offer_accepted, time_stamp):
-
     db = connect(address, username, password, schema_name)
     cursor = db.cursor()
     insert = """INSERT INTO ALL_DATA(
@@ -123,6 +122,11 @@ class Accept(Page):
             #  message = self.player.message
         else:
             is_complex = 'N'
+
+        # reserve the min_accept and max_reject attributes that getting zeroed in every round.
+        if self.round_number > 1:
+            self.player.max_reject = self.player.in_round(self.round_number - 1).max_reject
+            self.player.min_accept = self.player.in_round(self.round_number - 1).min_accept
 
         min_accept = currency_to_int(self.player.min_accept)
         max_reject = currency_to_int(self.player.max_reject)
