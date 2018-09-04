@@ -8,16 +8,16 @@
 {% block content %}
 
     You and the proposer were given {{ Constants.endowment }} in this round, out of which the other player offered
-    you <strong>{{ player.amount_offered }}</strong>.
+    you <b>{{ player.amount_offered }}</b>.
     <br>
 
     {% if player.offer_accepted %}
-        You <strong>accepted</strong> the offer,
+        You <b>accepted</b> the offer,
     {% else %}
-        You <strong>rejected</strong> the offer,
+        You <b>rejected</b> the offer,
     {% endif %}
 
-    therefore your total payoff (in all rounds) is <strong>{{ player.payoff }}</strong>.
+    therefore your total payoff (in all rounds) is <b>{{ player.payoff }}</b>.
     </p>
 
     {% next_button %}

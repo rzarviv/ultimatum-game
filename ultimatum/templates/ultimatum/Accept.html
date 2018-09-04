@@ -8,29 +8,65 @@
 {% block content %}
 
     <style type="text/css">
-        #message {
-            font-size: 22px;
-            color: crimson
+        #offer {
+            display: none;
         }
+
     </style>
 
+    <script>
+        // load the modal after the DOM is ready. Otherwise it will not be displayed.
+        $(document).ready(function () {
+            $(function () {
+                $('#exampleModal').modal();
+
+            });
+        });
+
+        // display the offer only after the modal is dismissed.
+        function displayOffer() {
+            $('#offer').css("display", "inline");
+        }
+    </script>
+
     <p>
-        You are the <strong>responder</strong>.
+        You are the <b>responder</b>.
     </p>
 
     {% if player.complex_mode %}
-
-        <p id="message">
-            <strong> Please note: {{ player.message }}</strong>
-        </p>
+        <!--a Bootstrap modal contains the offer for the responder-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">System Message</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onclick="displayOffer()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{ player.message }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="displayOffer()">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     {% endif %}
 
-    <p>
+    <p id="offer">
         The other player has offered you {{ player.amount_offered }}.
+        <br/>
+        <b>Do you wish to accept the offer?</b>
     </p>
 
-    <p><b>Do you wish to accept the offer?</b></p>
+
     <div>
         <button name="offer_accepted" value="True" class="btn btn-primary btn-large">
             Yes

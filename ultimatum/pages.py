@@ -154,7 +154,10 @@ class Accept(Page):
 
 
 class Results(Page):
-    pass
+    def is_displayed(self):
+        if self.player.complex_mode:
+            return self.round_number == CONFIG['num_rounds']
+
 
 
 page_sequence = [Introduction,
