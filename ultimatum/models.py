@@ -23,9 +23,9 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    selfish_message = "Our system indicates that you'll probably get a very selfish offers."
-    generous_message = "Our system indicates that you'll probably get a very generous offers."
-    average_message = "Our system indicates that you'll probably get an average offers."
+    selfish_message = "Our system indicates that you'll probably get a very selfish offer."
+    generous_message = "Our system indicates that you'll probably get a very generous offer."
+    average_message = "Our system indicates that you'll probably get an average offer."
     messages = [selfish_message, generous_message, average_message]
 
     #  range of all the offers a player can get
