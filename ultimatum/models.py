@@ -20,7 +20,6 @@ class Constants(BaseConstants):
 
     #  maximal amount that can be offered to a player
     endowment = c(100)
-
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
@@ -55,6 +54,10 @@ class Player(BasePlayer):
     # the amount that is offered for each player
     amount_offered = models.CurrencyField(initial=random.choice(Constants.offer_choices))
 
+    total_amount_offered = models.CurrencyField(initial=0)
+
+    total_endowment = models.CurrencyField(initial=0)
+
     # the message displayed to the player in 'complex' mode
     message = models.StringField(initial='')
 
@@ -81,6 +84,17 @@ class Player(BasePlayer):
                 self.payoff = Constants.payoff_if_rejected + self.in_round(self.round_number - 1).payoff
             else:
                 self.payoff = Constants.payoff_if_rejected
+
+    def reserve_min_max(self):
+        if self.round_number > 1:
+            self.max_reject = self.in_round(self.round_number - 1).max_reject
+            self.min_accept = self.in_round(self.round_number - 1).min_accept
+
+    def set_total_amount_offered(self):
+        if self.round_number > 1:
+            self.total_amount_offered = self.amount_offered + self.in_round(self.round_number - 1).total_amount_offered
+        else:
+            self.total_amount_offered = self.amount_offered
 
     def set_message(self):
         if self.complex_mode:

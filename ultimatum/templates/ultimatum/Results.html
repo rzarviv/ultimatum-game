@@ -7,18 +7,21 @@
 
 {% block content %}
 
-    <p>You and the proposer were given {{ Constants.endowment }} in this round, out of which the other player offered
-        you <b>{{ player.amount_offered }}</b>.</p>
+    {% if not player.complex_mode %}
+        <p>You and the proposer were given {{ player.total_endowment }} in all rounds, out of which the other player
+            offered you <b>{{ player.amount_offered }}</b> in this round and <b>{{ player.total_amount_offered }} </b>in
+            all
+            rounds.</p>
 
+        {% if player.offer_accepted %}
+            You <b>accepted</b> the offer,therefore
+        {% else %}
+            You <b>rejected</b> the offer,therefore
+        {% endif %}
 
-    {% if player.offer_accepted %}
-        You <b>accepted</b> the offer,
-    {% else %}
-        You <b>rejected</b> the offer,
     {% endif %}
 
-    therefore your total payoff (in all rounds) is <b>{{ player.payoff }}</b>.
-    </p>
+    your total payoff (in all rounds) is <b>{{ player.payoff }}</b>.
 
     {% next_button %}
     {% include Constants.instructions_template %}

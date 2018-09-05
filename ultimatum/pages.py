@@ -2,6 +2,7 @@ from ._builtin import Page
 from MySQLdb import Warning, Error, connect
 import datetime
 from ultimatum_config import CONFIG
+from .models import Constants
 
 username = CONFIG['db_username']
 password = CONFIG['db_password']
@@ -80,7 +81,7 @@ def currency_to_int(currency_field):
     return int(str(currency_field)[:-7])
 
 
-############################################################################
+# ----------------------------endof utility functions-------------------- #
 
 
 class Introduction(Page):
@@ -93,9 +94,9 @@ class Introduction(Page):
         create_table()
 
 
-class Offer(Page):
-    form_model = 'player'
-    form_fields = ['amount_offered']
+# class Offer(Page):
+#     form_model = 'player'
+#     form_fields = ['amount_offered']
 
 
 class ChooseRanges(Page):
@@ -130,14 +131,21 @@ class Accept(Page):
         else:
             is_complex = 'N'
 
+        amount_offered = currency_to_int(self.player.amount_offered)
+
         # reserve the min_accept and max_reject attributes that getting zeroed in every round.
-        if self.round_number > 1:
-            self.player.max_reject = self.player.in_round(self.round_number - 1).max_reject
-            self.player.min_accept = self.player.in_round(self.round_number - 1).min_accept
+        self.player.reserve_min_max()
+        self.player.set_total_amount_offered()
+
+        self.player.total_endowment = round_num * Constants.endowment
+
+        # if self.round_number > 1:
+        #     self.player.max_reject = self.player.in_round(round_num - 1).max_reject
+        #     self.player.min_accept = self.player.in_round(round_num - 1).min_accept
 
         min_accept = currency_to_int(self.player.min_accept)
         max_reject = currency_to_int(self.player.max_reject)
-        amount_offered = currency_to_int(self.player.amount_offered)
+
         message = self.player.message
 
         if self.player.offer_accepted:
@@ -158,6 +166,8 @@ class Results(Page):
     def is_displayed(self):
         if self.player.complex_mode:
             return self.round_number == CONFIG['num_rounds']
+        else:
+            return True
 
 
 page_sequence = [Introduction,
