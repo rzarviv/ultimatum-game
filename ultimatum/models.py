@@ -16,6 +16,7 @@ class Constants(BaseConstants):
     num_rounds = CONFIG['num_rounds']
 
     instructions_template = 'ultimatum/Instructions.html'
+    popup_template = 'ultimatum/PopupMessage.html'
 
     #  maximal amount that can be offered to a player
     endowment = c(100)
@@ -40,8 +41,7 @@ class Subsession(BaseSubsession):
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.complex_mode = CONFIG['complex_mode']
-            if p.complex_mode:
-                p.message = random.choice(Constants.messages)
+            p.set_message()
 
 
 class Group(BaseGroup):
@@ -82,6 +82,6 @@ class Player(BasePlayer):
             else:
                 self.payoff = Constants.payoff_if_rejected
 
-    # def set_message(self):
-    #     if self.complex_mode:
-    #         self.message = random.choice(Constants.messages)
+    def set_message(self):
+        if self.complex_mode:
+            self.message = random.choice(Constants.messages)

@@ -9,6 +9,7 @@ schema_name = CONFIG['db_schema_name']
 address = CONFIG['db_address']
 
 
+# ----------------------------utility functions-------------------- #
 def create_database():
     db = connect(address, username, password)
     cursor = db.cursor()
@@ -52,11 +53,42 @@ def create_table():
     db.close()
 
 
+def store_players_data(session_code, round_num, player_id,
+                       is_complex, min_accept, max_reject,
+                       amount_offered, message, offer_accepted, time_stamp):
+    db = connect(address, username, password, schema_name)
+    cursor = db.cursor()
+    insert = """INSERT INTO ALL_DATA(
+                                 SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, MIN_ACCEPT, MAX_REJECT, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
+                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) 
+                                 """
+    try:
+        cursor.execute(insert, (
+            session_code, round_num, player_id, is_complex, min_accept, max_reject, amount_offered, message,
+            offer_accepted, time_stamp,))
+
+        db.commit()
+    except(Error, Warning) as e:
+        print(e)
+        db.rollback()
+
+    db.close()
+
+
+def currency_to_int(currency_field):
+    #  removes the ' points' suffix from the currency's string representation and converts it to int
+    return int(str(currency_field)[:-7])
+
+
+############################################################################
+
+
 class Introduction(Page):
     def is_displayed(self):
         return self.round_number == 1
 
     def before_next_page(self):
+        self.player.set_message()
         create_database()
         create_table()
 
@@ -78,32 +110,8 @@ class ChooseRanges(Page):
             return "the minimal amount you'd absolutely accept cannot be less than the maximal amount you'd " \
                    "absolutely reject "
 
-
-def store_players_data(session_code, round_num, player_id,
-                       is_complex, min_accept, max_reject,
-                       amount_offered, message, offer_accepted, time_stamp):
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
-    insert = """INSERT INTO ALL_DATA(
-                             SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, MIN_ACCEPT, MAX_REJECT, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
-                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) 
-                             """
-    try:
-        cursor.execute(insert, (
-            session_code, round_num, player_id, is_complex, min_accept, max_reject, amount_offered, message,
-            offer_accepted, time_stamp,))
-
-        db.commit()
-    except(Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
-
-
-def currency_to_int(currency_field):
-    #  removes the ' points' suffix from the currency's string representation and converts it to int
-    return int(str(currency_field)[:-7])
+    def before_next_page(self):
+        self.player.set_message()
 
 
 class Accept(Page):
@@ -119,7 +127,6 @@ class Accept(Page):
 
         if self.player.complex_mode:
             is_complex = 'Y'
-            #  message = self.player.message
         else:
             is_complex = 'N'
 
@@ -133,11 +140,6 @@ class Accept(Page):
         amount_offered = currency_to_int(self.player.amount_offered)
         message = self.player.message
 
-        # if self.player.complex_mode:
-        #     message = self.player.message
-        # else:
-        #     message = ""
-
         if self.player.offer_accepted:
             offer_accepted = 'Y'
         else:
@@ -150,14 +152,12 @@ class Accept(Page):
                            offer_accepted, time_stamp)
 
         self.player.set_payoff()
-        # self.player.set_message()
 
 
 class Results(Page):
     def is_displayed(self):
         if self.player.complex_mode:
             return self.round_number == CONFIG['num_rounds']
-
 
 
 page_sequence = [Introduction,

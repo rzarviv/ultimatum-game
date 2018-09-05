@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-    Choose Intervals
+    Choose Thresholds
 {% endblock %}
 
 {% block app_styles %}
@@ -24,7 +24,7 @@
             color: #f6931f;
             font-weight: bold;
             text-align: center;
-            width: 15%;
+            width: 11%;
         }
 
         .slider_right {
@@ -75,24 +75,19 @@
             $(".accept_amount").val("$" + $("#accept-range").slider("values", 0)); // renders the slider's value
         });
 
-        // load the modal after the DOM is ready. Otherwise it will not be displayed.
-        $(document).ready(function () {
-            $(function () {
-                $('#exampleModal').modal();
-            });
-        });
 
     </script>
 
+    {% if player.complex_mode %}
 
-    <br>
-    <label>What is the biggest offer you would ABSOLUTELY reject?</label>
-    <br>
-    <br>
+        {% include Constants.popup_template %}
+
+    {% endif %}
+
+    <p>What is the biggest offer you would ABSOLUTELY reject?</p>
+
     {# displays the player's decision about the biggest offer he would absolutely reject #}
     <input id="reject_amount" class="reject_amount" readonly>
-
-    <br>
 
     <div>
         {# this div is the slider for the biggest offer the player would absolutely reject #}
@@ -103,16 +98,13 @@
         <span class="slider_right">$100</span>
     </div>
 
-
     <br>
     <br>
 
-    <label>What is the smallest offer you would ABSOLUTELY accept?</label>
-    <br>
-    <br>
+    <p>What is the smallest offer you would ABSOLUTELY accept?</p>
+
     {# displays the player's decision about the smallest offer he would absolutely accept #}
     <input id="accept_amount" class="accept_amount" readonly>
-    <br>
 
     <div>
         {# this div is the slider for the biggest offer the player would absolutely reject #}
@@ -126,12 +118,10 @@
     <br>
     <br>
 
-    <label>You are indifferent between
+    <p>You are indifferent between
         <input readonly class="reject_amount indifferent"> and
-        <input readonly class="accept_amount indifferent"></label>
-    <br>
-    <br>
-
+        <input readonly class="accept_amount indifferent">
+    </p>
 
     {% next_button %}
 
