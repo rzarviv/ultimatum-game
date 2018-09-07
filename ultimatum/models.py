@@ -51,12 +51,14 @@ class Player(BasePlayer):
     # the player's total payoff in all rounds
     payoff = models.CurrencyField(initial=0)
 
-    # the amount that is offered for each player
+    # the amount that is offered for each player in every round
     amount_offered = models.CurrencyField(initial=random.choice(Constants.offer_choices))
 
     total_amount_offered = models.CurrencyField(initial=0)
 
-    total_endowment = models.CurrencyField(initial=0)
+    # the total number of points the proposer and the divider had to divide between themselves.
+    # usually, current_endowment = round_number * endowment
+    current_endowment = models.CurrencyField(initial=0)
 
     # the message displayed to the player in 'complex' mode
     message = models.StringField(initial='')
@@ -71,7 +73,7 @@ class Player(BasePlayer):
     max_reject = models.CurrencyField(initial=0)
 
     # indicates if the 'complex' mode is on or not
-    complex_mode = models.BooleanField(initial=0)
+    complex_mode = models.BooleanField(initial=False)
 
     def set_payoff(self):
         if self.offer_accepted:

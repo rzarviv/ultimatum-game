@@ -99,7 +99,7 @@ class Introduction(Page):
 #     form_fields = ['amount_offered']
 
 
-class ChooseRanges(Page):
+class ChooseThresholds(Page):
     form_model = 'player'
     form_fields = ['min_accept', 'max_reject']
 
@@ -171,6 +171,6 @@ class Results(Page):
 
 
 page_sequence = [Introduction,
-                 ChooseRanges,
+                 ChooseThresholds,
                  Accept,
                  Results]
