@@ -45,8 +45,15 @@ SESSION_CONFIGS = [
         'name': 'ultimatum',
         'display_name': "Ultimatum (randomized: strategy vs. direct response)",
         'num_demo_participants': 1,
-        'app_sequence': ['ultimatum'],
+        'app_sequence': ['choose_thresholds', 'ultimatum'],
     },
+    {
+        'name': 'choose_thresholds',
+        'display_name': "bfibidanbonobnrbinir",
+        'num_demo_participants': 1,
+        'app_sequence': ['choose_thresholds'],
+    },
+
     # other session configs go here ...
 ]
 # see the end of this file for the inactive session configs

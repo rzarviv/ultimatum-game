@@ -1,0 +1,79 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block app_styles %}
+
+    <style type="text/css">
+        #amount {
+            border: 0;
+            color: #f6931f;
+            font-weight: bold;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .slider_right {
+            display: inline-block;
+            float: right
+        }
+
+        .slider_left {
+            display: inline-block;
+            float: left
+        }
+    </style>
+
+{% endblock %}
+
+{% block title %}
+    Page title
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: 0,
+                max: 100,
+                values: [0, 100],
+                slide: function (event, ui) {
+                    $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                    $("#id_min").val(ui.values[0]);
+                    $("#id_max").val(ui.values[1]);
+                }
+            });
+            $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+                " - $" + $("#slider-range").slider("values", 1));
+        });
+    </script>
+
+
+    <p>{{ player.message }}</p>
+
+    {# displays the player's decision about the biggest offer he would absolutely reject #}
+    <input id="amount" readonly>
+
+    <div>
+        {# this div is the slider for the biggest offer the player would absolutely reject #}
+        <div id="slider-range"></div>
+        {# render the input fields as hidden to pass the value there from the slider using their id, based on the model field name #}
+        {{ form.min.as_hidden }}
+        {{ form.max.as_hidden }}
+
+        <span class="slider_left">$0</span>
+        <span class="slider_right">$100</span>
+    </div>
+
+    <br>
+    <br>
+
+    {% next_button %}
+
+{% endblock %}

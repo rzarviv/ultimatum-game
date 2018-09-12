@@ -23,9 +23,9 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    selfish_message = "Our system indicates that you'll probably get a very selfish offer."
-    generous_message = "Our system indicates that you'll probably get a very generous offer."
-    average_message = "Our system indicates that you'll probably get an average offer."
+    selfish_message = "Our system indicates that you will probably get a very selfish offer"
+    generous_message = "Our system indicates that you will probably get a very generous offer"
+    average_message = "Our system indicates that you will probably get an average offer"
     messages = [selfish_message, generous_message, average_message]
 
     #  range of all the offers a player can get
@@ -66,11 +66,11 @@ class Player(BasePlayer):
     # indicates if the offer was accepted or not
     offer_accepted = models.BooleanField()
 
-    # the minimal amount the player would accept
-    min_accept = models.CurrencyField(initial=0)
-
-    # the maximal amount the player would reject
-    max_reject = models.CurrencyField(initial=0)
+    # # the minimal amount the player would accept
+    # min_accept = models.CurrencyField(initial=0)
+    #
+    # # the maximal amount the player would reject
+    # max_reject = models.CurrencyField(initial=0)
 
     # indicates if the 'complex' mode is on or not
     complex_mode = models.BooleanField(initial=False)
@@ -89,8 +89,9 @@ class Player(BasePlayer):
 
     def reserve_min_max(self):
         if self.round_number > 1:
-            self.max_reject = self.in_round(self.round_number - 1).max_reject
-            self.min_accept = self.in_round(self.round_number - 1).min_accept
+            pass
+            # self.max_reject = self.in_round(self.round_number - 1).max_reject
+            # self.min_accept = self.in_round(self.round_number - 1).min_accept
 
     def set_total_amount_offered(self):
         if self.round_number > 1:

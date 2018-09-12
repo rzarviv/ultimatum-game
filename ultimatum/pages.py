@@ -55,17 +55,16 @@ def create_table():
 
 
 def store_players_data(session_code, round_num, player_id,
-                       is_complex, min_accept, max_reject,
-                       amount_offered, message, offer_accepted, time_stamp):
+                       is_complex, amount_offered, message, offer_accepted, time_stamp):
     db = connect(address, username, password, schema_name)
     cursor = db.cursor()
     insert = """INSERT INTO ALL_DATA(
-                                 SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, MIN_ACCEPT, MAX_REJECT, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
-                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) 
+                                 SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
+                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s ) 
                                  """
     try:
         cursor.execute(insert, (
-            session_code, round_num, player_id, is_complex, min_accept, max_reject, amount_offered, message,
+            session_code, round_num, player_id, is_complex, amount_offered, message,
             offer_accepted, time_stamp,))
 
         db.commit()
@@ -90,8 +89,8 @@ class Introduction(Page):
 
     def before_next_page(self):
         self.player.set_message()
-        create_database()
-        create_table()
+        # create_database()
+        # create_table()
 
 
 # class Offer(Page):
@@ -99,20 +98,20 @@ class Introduction(Page):
 #     form_fields = ['amount_offered']
 
 
-class ChooseThresholds(Page):
-    form_model = 'player'
-    form_fields = ['min_accept', 'max_reject']
-
-    def is_displayed(self):
-        return self.round_number == 1
-
-    def error_message(self, values):
-        if values["min_accept"] < values["max_reject"]:
-            return "the minimal amount you'd absolutely accept cannot be less than the maximal amount you'd " \
-                   "absolutely reject "
-
-    def before_next_page(self):
-        self.player.set_message()
+# class ChooseThresholds(Page):
+#     form_model = 'player'
+#     form_fields = ['min_accept', 'max_reject']
+#
+#     def is_displayed(self):
+#         return self.round_number == 1
+#
+#     def error_message(self, values):
+#         if values["min_accept"] < values["max_reject"]:
+#             return "the minimal amount you'd absolutely accept cannot be less than the maximal amount you'd " \
+#                    "absolutely reject "
+#
+#     def before_next_page(self):
+#         self.player.set_message()
 
 
 class Accept(Page):
@@ -137,14 +136,14 @@ class Accept(Page):
         self.player.reserve_min_max()
         self.player.set_total_amount_offered()
 
-        self.player.total_endowment = round_num * Constants.endowment
+        self.player.current_endowment = round_num * Constants.endowment
 
         # if self.round_number > 1:
         #     self.player.max_reject = self.player.in_round(round_num - 1).max_reject
         #     self.player.min_accept = self.player.in_round(round_num - 1).min_accept
 
-        min_accept = currency_to_int(self.player.min_accept)
-        max_reject = currency_to_int(self.player.max_reject)
+        # min_accept = currency_to_int(self.player.min_accept)
+        # max_reject = currency_to_int(self.player.max_reject)
 
         message = self.player.message
 
@@ -155,9 +154,8 @@ class Accept(Page):
 
         time_stamp = str(datetime.datetime.utcnow())
 
-        store_players_data(session_code, round_num, player_id, is_complex, min_accept, max_reject, amount_offered,
-                           message,
-                           offer_accepted, time_stamp)
+        store_players_data(session_code, round_num, player_id, is_complex, amount_offered,
+                           message, offer_accepted, time_stamp)
 
         self.player.set_payoff()
 
@@ -171,6 +169,6 @@ class Results(Page):
 
 
 page_sequence = [Introduction,
-                 ChooseThresholds,
+                 # ChooseThresholds,
                  Accept,
                  Results]

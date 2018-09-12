@@ -19,6 +19,17 @@
             transform: translate(-50%, -50%);
         }
 
+        .amount {
+            border: 0;
+            color: #f6931f;
+            font-weight: bold;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
         .indifferent {
             border: 0;
             color: #f6931f;
@@ -44,6 +55,10 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    {#    <link rel="stylesheet"#}
+    {#          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.2.0/css/bootstrap-slider.css">#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.2.0/bootstrap-slider.js"></script>#}
 
 
     <script>
@@ -123,8 +138,42 @@
         <input readonly class="accept_amount indifferent">
     </p>
 
+
+    <div class="testslider"/>
+    <div id="testarea"/>
+
+
+    {% for item in Constants.messages %}
+        <p>{{ item }}</p>
+
+
+        <script>
+            var item = {{ item|json }};
+            var id = item.split(" ").join("_");
+
+            $("<div />", {id: id}).appendTo("#testarea");
+            $("<input />", {id: id + '_amount', class: 'amount'}).appendTo("#testarea");
+            $("<span>0</span>", {id: id + '_left', class: 'slider_left'}).appendTo("#testarea");
+            $("<span>100</span>", {id: id + '_right', class: 'slider_right'}).appendTo("#testarea");
+
+            $('#' + id).slider({
+                range: true,
+                min: 0,
+                max: 100,
+                values: [0, 100],
+                slide: function (event, ui) {
+                    $('#' + this.id + '_amount').val("$" + ui.values[0] + " - $" + ui.values[1]);
+                    $('#' + this.id + '_left').val(ui.values[0]);
+                    $('#' + this.id + '_right').val(ui.values[1]);
+                }
+            }).appendTo('#testarea');
+
+
+        </script>
+
+    {% endfor %}
+
     {% next_button %}
 
-    {% include Constants.instructions_template %}
 
 {% endblock %}
