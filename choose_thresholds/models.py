@@ -1,18 +1,14 @@
-import random
 
 from otree.api import (
     models, BaseConstants, BaseSubsession, BaseGroup, BasePlayer, Currency as c, currency_range
 )
 
-author = 'Your name here'
+author = 'Roy Zerbib'
 
-doc = """
-Your app description
-"""
 
-selfish_message = "Our system indicates that you will probably get a very selfish offer"
-generous_message = "Our system indicates that you will probably get a very generous offer"
-average_message = "Our system indicates that you will probably get an average offer"
+selfish_message = "we indicate that you will probably get a very selfish offer"
+generous_message = "we indicate that you will probably get a very generous offer"
+average_message = "we indicate that you will probably get an average offer"
 messages = [selfish_message, generous_message, average_message]
 
 
@@ -45,10 +41,10 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     # the minimal amount the player would accept
-    min = models.CurrencyField(initial=0)
+    min_accept = models.CurrencyField(initial=0)
 
     # the maximal amount the player would reject
-    max = models.CurrencyField(initial=0)
+    max_reject = models.CurrencyField(initial=0)
 
     index = models.IntegerField(initial=0)
 

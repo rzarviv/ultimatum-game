@@ -29,22 +29,21 @@ def create_tables():
     db = connect(address, username, password, schema_name)
     cursor = db.cursor()
     # create a table that stores the user'ss thresholds for each message
-    if CONFIG['complex_mode']:
-        query = """CREATE TABLE IF NOT EXISTS THRESHOLDS(
-                                        SESSION_CODE  CHAR(30) NOT NULL,
-                                        PLAYER_ID INT NOT NULL,
-                                        MESSAGE CHAR(100),                                      
-                                        MIN_ACCEPT INT NOT NULL,
-                                        MAX_ACCEPT INT NOT NULL,
-                                        CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
-                                        """
-        try:
-            cursor.execute(query)
-            db.commit()
+    query = """CREATE TABLE IF NOT EXISTS THRESHOLDS(
+                                           SESSION_CODE  CHAR(30) NOT NULL,
+                                           PLAYER_ID INT NOT NULL,
+                                           MESSAGE CHAR(100),                                      
+                                           MIN_ACCEPT INT NOT NULL,
+                                           MAX_REJECT INT NOT NULL,
+                                           CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
+                                           """
+    try:
+        cursor.execute(query)
+        db.commit()
 
-        except (Error, Warning) as e:
-            print(e)
-            db.rollback()
+    except (Error, Warning) as e:
+        print(e)
+        db.rollback()
 
     query = """CREATE TABLE IF NOT EXISTS ALL_DATA(
                                       SESSION_CODE  CHAR(30) NOT NULL,
@@ -68,16 +67,16 @@ def create_tables():
     db.close()
 
 
-def store_players_thresholds(session_code, player_id, message, min_accept, max_accept):
+def store_players_thresholds(session_code, player_id, message, min_accept, max_reject):
     db = connect(address, username, password, schema_name)
     cursor = db.cursor()
 
     insert = """INSERT INTO THRESHOLDS(
-                                 SESSION_CODE, PLAYER_ID, MESSAGE, MIN_ACCEPT, MAX_ACCEPT)
+                                 SESSION_CODE, PLAYER_ID, MESSAGE, MIN_ACCEPT, MAX_REJECT)
                                  VALUES (%s, %s, %s, %s, %s ) 
                                  """
     try:
-        cursor.execute(insert, (session_code, player_id, message, min_accept, max_accept,))
+        cursor.execute(insert, (session_code, player_id, message, min_accept, max_reject,))
 
         db.commit()
     except(Error, Warning) as e:
@@ -97,7 +96,10 @@ def currency_to_int(currency_field):
 
 class Introduction(Page):
     def is_displayed(self):
-        return self.round_number == 1
+        if self.session.__dict__['config']['name'] == "ultimatum_game_before_strategy":
+            return False
+        else:
+            return self.round_number == 1
 
     def before_next_page(self):
         create_database()
@@ -106,20 +108,17 @@ class Introduction(Page):
 
 class ChooseThresholds(Page):
     form_model = 'player'
-    form_fields = ['min', 'max']
-
-    def is_displayed(self):
-        return CONFIG['complex_mode']
+    form_fields = ['min_accept', 'max_reject']
 
     def before_next_page(self):
-        if CONFIG['complex_mode']:
-            session_code = self.session.__dict__['code']
-            player_id = self.player.id_in_group
-            message = self.player.message
-            min_accept = currency_to_int(self.player.min)
-            max_accept = currency_to_int(self.player.max)
+        session_code = self.session.__dict__['code']
+        player_id = self.player.id_in_group
+        message = self.player.message
+        min_accept = currency_to_int(self.player.min_accept)
+        max_reject = currency_to_int(self.player.max_reject)
 
-            store_players_thresholds(session_code, player_id, message, min_accept, max_accept)
+        store_players_thresholds(session_code, player_id, message, min_accept, max_reject)
+        # if CONFIG['complex_mode']:
 
 
 page_sequence = [

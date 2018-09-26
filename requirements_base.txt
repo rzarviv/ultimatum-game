@@ -1,2 +1,2 @@
 # project requirements
-otree>=2.1.8
+otree[mturk]>=2.1.8

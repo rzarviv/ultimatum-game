@@ -4,6 +4,7 @@ from otree.api import (
 )
 import random
 from ultimatum_config import CONFIG
+from settings import SESSION_CONFIG_DEFAULTS
 
 
 class Constants(BaseConstants):
@@ -23,9 +24,9 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    selfish_message = "Our system indicates that you will probably get a very selfish offer"
-    generous_message = "Our system indicates that you will probably get a very generous offer"
-    average_message = "Our system indicates that you will probably get an average offer"
+    selfish_message = "We indicate that you will probably get a very selfish offer"
+    generous_message = "We indicate that you will probably get a very generous offer"
+    average_message = "We indicate that you will probably get an average offer"
     messages = [selfish_message, generous_message, average_message]
 
     #  range of all the offers a player can get
@@ -39,7 +40,7 @@ class Subsession(BaseSubsession):
     def creating_session(self):
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
-            p.complex_mode = CONFIG['complex_mode']
+            p.complex_mode = self.session.config['complex_mode']
             p.set_message()
 
 
@@ -52,7 +53,7 @@ class Player(BasePlayer):
     payoff = models.CurrencyField(initial=0)
 
     # the amount that is offered for each player in every round
-    amount_offered = models.CurrencyField(initial=random.choice(Constants.offer_choices))
+    amount_offered = models.CurrencyField(initial=0)
 
     total_amount_offered = models.CurrencyField(initial=0)
 
@@ -65,12 +66,6 @@ class Player(BasePlayer):
 
     # indicates if the offer was accepted or not
     offer_accepted = models.BooleanField()
-
-    # # the minimal amount the player would accept
-    # min_accept = models.CurrencyField(initial=0)
-    #
-    # # the maximal amount the player would reject
-    # max_reject = models.CurrencyField(initial=0)
 
     # indicates if the 'complex' mode is on or not
     complex_mode = models.BooleanField(initial=False)
@@ -87,12 +82,6 @@ class Player(BasePlayer):
             else:
                 self.payoff = Constants.payoff_if_rejected
 
-    def reserve_min_max(self):
-        if self.round_number > 1:
-            pass
-            # self.max_reject = self.in_round(self.round_number - 1).max_reject
-            # self.min_accept = self.in_round(self.round_number - 1).min_accept
-
     def set_total_amount_offered(self):
         if self.round_number > 1:
             self.total_amount_offered = self.amount_offered + self.in_round(self.round_number - 1).total_amount_offered
@@ -102,3 +91,15 @@ class Player(BasePlayer):
     def set_message(self):
         if self.complex_mode:
             self.message = random.choice(Constants.messages)
+
+    # def reserve_min_max(self):
+    #     if self.round_number > 1:
+    #         pass
+    #         # self.max_reject = self.in_round(self.round_number - 1).max_reject
+    #         # self.min_accept = self.in_round(self.round_number - 1).min_accept
+
+    # # the minimal amount the player would accept
+    # min_accept = models.CurrencyField(initial=0)
+    #
+    # # the maximal amount the player would reject
+    # max_reject = models.CurrencyField(initial=0)
