@@ -9,63 +9,7 @@ address = CONFIG['db_address']
 schema_name = CONFIG['db_schema_name']
 
 
-def create_database():
-    db = connect(address, username, password)
-    cursor = db.cursor()
-    query = 'CREATE DATABASE IF NOT EXISTS ' + schema_name
-
-    try:
-        cursor.execute(query)
-        db.commit()
-
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
-
-
-def create_tables():
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
-    # create a table that stores the user'ss thresholds for each message
-    query = """CREATE TABLE IF NOT EXISTS THRESHOLDS(
-                                           SESSION_CODE  CHAR(30) NOT NULL,
-                                           PLAYER_ID INT NOT NULL,
-                                           MESSAGE CHAR(100),                                      
-                                           MIN_ACCEPT INT NOT NULL,
-                                           MAX_REJECT INT NOT NULL,
-                                           CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
-                                           """
-    try:
-        cursor.execute(query)
-        db.commit()
-
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    query = """CREATE TABLE IF NOT EXISTS ALL_DATA(
-                                      SESSION_CODE  CHAR(30) NOT NULL,
-                                      ROUND  INT NOT NULL,
-                                      PLAYER_ID INT NOT NULL,
-                                      COMPLEX CHAR(1) NOT NULL,
-                                      MESSAGE CHAR(100),
-                                      AMOUNT_OFFERED INT NOT NULL,
-                                      OFFER_ACCEPTED CHAR(1) NOT NULL,
-                                      TIME_STAMP TIMESTAMP NOT NULL,
-                                      CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID))
-                                    """
-    try:
-        cursor.execute(query)
-        db.commit()
-
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
-
+########################## utility functions #############################
 
 def store_players_thresholds(session_code, player_id, message, min_accept, max_reject):
     db = connect(address, username, password, schema_name)
@@ -101,10 +45,6 @@ class Introduction(Page):
         else:
             return self.round_number == 1
 
-    def before_next_page(self):
-        create_database()
-        create_tables()
-
 
 class ChooseThresholds(Page):
     form_model = 'player'
@@ -118,7 +58,6 @@ class ChooseThresholds(Page):
         max_reject = currency_to_int(self.player.max_reject)
 
         store_players_thresholds(session_code, player_id, message, min_accept, max_reject)
-        # if CONFIG['complex_mode']:
 
 
 page_sequence = [

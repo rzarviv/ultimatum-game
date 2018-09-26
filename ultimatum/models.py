@@ -3,9 +3,59 @@ from otree.api import (
     Currency as c, currency_range,
 )
 import random
+from MySQLdb import Warning, Error, connect
 from ultimatum_config import CONFIG
-from settings import SESSION_CONFIG_DEFAULTS
 
+################################ database creation methods #######################################
+
+username = CONFIG['db_username']
+password = CONFIG['db_password']
+schema_name = CONFIG['db_schema_name']
+address = CONFIG['db_address']
+
+
+def create_database():
+    db = connect(address, username, password)
+    cursor = db.cursor()
+    query = 'CREATE DATABASE IF NOT EXISTS ' + schema_name
+
+    try:
+        cursor.execute(query)
+        db.commit()
+
+    except (Error, Warning) as e:
+        print(e)
+        db.rollback()
+
+    db.close()  # closing now to connect to the new database later
+
+
+def create_table():
+    db = connect(address, username, password, schema_name)
+    cursor = db.cursor()
+    query = """CREATE TABLE IF NOT EXISTS ALL_DATA(
+                                          SESSION_CODE  CHAR(30) NOT NULL,
+                                          ROUND  INT NOT NULL,
+                                          PLAYER_ID INT NOT NULL,
+                                          COMPLEX CHAR(1) NOT NULL,
+                                          MESSAGE CHAR(100),
+                                          AMOUNT_OFFERED INT NOT NULL,
+                                          OFFER_ACCEPTED CHAR(1) NOT NULL,
+                                          TIME_STAMP TIMESTAMP NOT NULL,
+                                          CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID))
+                                        """
+    try:
+        cursor.execute(query)
+        db.commit()
+
+    except (Error, Warning) as e:
+        print(e)
+        db.rollback()
+
+    db.close()
+
+
+##################################################################################################
 
 class Constants(BaseConstants):
     name_in_url = 'ultimatum'
@@ -38,6 +88,8 @@ class Subsession(BaseSubsession):
 
     # if the app has multiple rounds, creating_session gets run multiple times consecutively
     def creating_session(self):
+        create_database()
+        create_table()
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.complex_mode = self.session.config['complex_mode']
@@ -91,15 +143,3 @@ class Player(BasePlayer):
     def set_message(self):
         if self.complex_mode:
             self.message = random.choice(Constants.messages)
-
-    # def reserve_min_max(self):
-    #     if self.round_number > 1:
-    #         pass
-    #         # self.max_reject = self.in_round(self.round_number - 1).max_reject
-    #         # self.min_accept = self.in_round(self.round_number - 1).min_accept
-
-    # # the minimal amount the player would accept
-    # min_accept = models.CurrencyField(initial=0)
-    #
-    # # the maximal amount the player would reject
-    # max_reject = models.CurrencyField(initial=0)
