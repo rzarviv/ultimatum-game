@@ -1,4 +1,4 @@
-# oTree
+<!--# oTree
 
 oTree is a Python framework that lets you build:
 
@@ -192,3 +192,21 @@ Contact chris@otree.org with bug reports.
 
 The oTree core libraries are [here](https://github.com/oTree-org/otree-core).
 "# ultimate-game" 
+
+-->
+# Ultimatum-game  
+  
+A repository for a research about Extensive Form games, based on The Ultimatum Game presented in [https://economics-games.com/otree]().  
+Made using [Otree](http://www.otree.org/), an open-source platform for behavioral research based on [Django](https://www.djangoproject.com/).  
+  
+#### Maintenance Document
+You can access the maintenance document [here](https://docs.google.com/document/d/1LrxXw_-CV-Vj4_98r-dq3P97atfWoSy5VPuZ2erAiFc/edit?usp=sharing).
+
+
+#### Usage Document
+You can access the usage document [here](https://docs.google.com/document/d/1Rm1qTCOiBjZ5wXiifOfPHeqPHtZDDxytPubDIGve_aA/edit?usp=sharing).
+
+##TODO List:
+
+1. Connect the project to Amazon MTurk (and document it in the documents).
+2. Set MySQL as the main database instead of SQLite.

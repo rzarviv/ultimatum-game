@@ -33,45 +33,54 @@
 {% endblock %}
 
 {% block content %}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script>
-        $(function () {
-            $("#slider-range").slider({
-                range: true,
-                min: 0,
-                max: 100,
-                values: [0, 100],
-                slide: function (event, ui) {
-                    $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-                    $("#id_max_reject").val(ui.values[0]);
-                    $("#id_min_accept").val(ui.values[1]);
-                }
+        <script>
+            $(function () {
+                $("#slider-range").slider({
+                    range: true,
+                    min: 0,
+                    max: 100,
+                    values: [0, 100],
+                    slide: function (event, ui) {
+                        /*assigning to 'amount' the current range represented by the slider.*/
+                        $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+
+                        /*assigning to 'max_reject' the player's current maximal rejection amount.
+                        This way we pass the value to the form_filed named 'max_reject'.
+                        The same also applies to 'min_accept'.
+                        More information here: https://stackoverflow.com/questions/49634695/range-bar-otree */
+                        $("#id_max_reject").val(ui.values[0]);
+                        $("#id_min_accept").val(ui.values[1]);
+                    }
+                });
+                /*assigning to 'amount' the initial range represented by the slider.*/
+                $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+                    " - $" + $("#slider-range").slider("values", 1));
             });
-            $("#amount").val("$" + $("#slider-range").slider("values", 0) +
-                " - $" + $("#slider-range").slider("values", 1));
-        });
-    </script>
+        </script>
 
-    <p>Specify your zones of indifference (between accepting and rejecting an offer) using the slider.
+
+    <p>Specify your zone of indifference (between accepting and rejecting an offer) using the slider.
         The range to the LEFT will be your rejection zone. The range to the RIGHT will be your acceptance zone.</p>
 
     <p>What wil be your indifference zone if <b>{{ player.message }}?</b></p>
 
-    {# displays the player's decision about the biggest offer he would absolutely reject #}
-    <input id="amount" readonly>
+    {# displays the player's decision about the biggest offer he would absolutely reject.#}
+        <input id="amount" readonly>
 
-    <div>
-        {# this div is the slider for the biggest offer the player would absolutely reject #}
-        <div id="slider-range"></div>
-        {# render the input fields as hidden to pass the value there from the slider using their id, based on the model field name #}
-        {{ form.min_accept.as_hidden }}
-        {{ form.max_reject.as_hidden }}
+        <div>
+{#             this div is the slider which displays the player's indifference zone.#}
+            <div id="slider-range"></div>
+{#             rendering the input fields as hidden to pass the value there from the slider using their id, based on the model field name.#}
+            {{ form.min_accept.as_hidden }}
+            {{ form.max_reject.as_hidden }}
 
-        <span class="slider_left">$0</span>
-        <span class="slider_right">$100</span>
-    </div>
+            <span class="slider_left">$0</span>
+            <span class="slider_right">$100</span>
+        </div>
+
 
     <br>
     <br>

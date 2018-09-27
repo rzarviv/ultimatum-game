@@ -1,2 +1,3 @@
 # project requirements
 otree[mturk]>=2.1.8
+mysqlclient

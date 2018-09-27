@@ -6,10 +6,13 @@ from ultimatum_config import CONFIG
 
 author = 'Roy Zerbib'
 
-selfish_message = "we indicate that you will probably get a very selfish offer"
-generous_message = "we indicate that you will probably get a very generous offer"
-average_message = "we indicate that you will probably get an average offer"
-messages = [selfish_message, generous_message, average_message]
+
+# messages definition. add your messages here
+# selfish_message = "we indicate that you will probably get a very selfish offer"
+# generous_message = "we indicate that you will probably get a very generous offer"
+# average_message = "we indicate that you will probably get an average offer"
+# messages = [selfish_message, generous_message, average_message]
+messages  = CONFIG['messages']
 
 ################################ database creation methods #######################################
 
@@ -42,10 +45,10 @@ def create_table():
     query = """CREATE TABLE IF NOT EXISTS THRESHOLDS(
                                            SESSION_CODE  CHAR(30) NOT NULL,
                                            PLAYER_ID INT NOT NULL,
-                                           MESSAGE CHAR(100),                                      
+                                           MESSAGE CHAR(100) NOT NULL,                                      
                                            MIN_ACCEPT INT NOT NULL,
                                            MAX_REJECT INT NOT NULL,
-                                           CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
+                                           CONSTRAINT PK_THRESHOLD PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
                                            """
     try:
         cursor.execute(query)
@@ -80,8 +83,10 @@ class Subsession(BaseSubsession):
 
     # if the app has multiple rounds, creating_session gets run multiple times consecutively
     def creating_session(self):
+
         create_database()
         create_table()
+
         for p in self.get_players():
             p.set_message()
 
@@ -104,6 +109,8 @@ class Player(BasePlayer):
     message = models.StringField(initial='')
 
     def set_message(self):
+        # setting the next message that will be displayed to the player in 'complex_mode'.
         if self.round_number > 1:
+            # incrementing the index by one.
             self.index = self.in_round(self.round_number - 1).index + 1
         self.message = messages[self.index]

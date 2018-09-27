@@ -1,5 +1,5 @@
 from os import environ
-from game_config import GAMES
+from ultimatum_config import CONFIG
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
 # in SESSION_CONFIGS, except those that explicitly override it.
@@ -10,16 +10,12 @@ SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 1.00,
     'participation_fee': 0.00,
     'complex_mode': True,
-    'doc': "",
+    'doc': "In complex mode a random message is displayed to the player in every level of the game, indicates the "
+           "system's opinion about the offer proposed to the player.",
+
 }
 
 SESSION_CONFIGS = [
-    # {
-    #     'name': 'my_simple_survey',
-    #     'num_demo_participants': 4,
-    #     'app_sequence': ['my_simple_survey'],
-    #     # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
-    # },
     {
         'name': 'ultimatum_strategy_before_game',
         'display_name': "Ultimatum Game - strategy before game",
@@ -65,9 +61,10 @@ ROOMS = [
 # for flexibility, you can set it in the environment variable OTREE_AUTH_LEVEL
 AUTH_LEVEL = 'STUDY'  # environ.get('OTREE_AUTH_LEVEL')
 
-ADMIN_USERNAME = 'admin'
+ADMIN_USERNAME = CONFIG['admin_username']
+
 # for security, best to set admin password in an environment variable
-ADMIN_PASSWORD = '1234'  # environ.get('OTREE_ADMIN_PASSWORD')
+ADMIN_PASSWORD = CONFIG['admin_password']  # environ.get('OTREE_ADMIN_PASSWORD')
 
 # Consider '', None, and '0' to be empty/false
 # DEBUG = (environ.get('OTREE_PRODUCTION') in {None, '', '0'})
@@ -85,7 +82,19 @@ SECRET_KEY = '5!sx)cs(uhcjfga+5__&8x$r+6%kywask0iq9*(q#4d8)0lcw3'
 # if an app is included in SESSION_CONFIGS, you don't need to list it here
 INSTALLED_APPS = ['otree']
 
-# environ['DATABASE_URL'] = 'jdbc:mysql://localhost:3306'
+# environ['DATABASE_URL'] = 'mysql://localhost:3306'
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': CONFIG['db_schema_name'],
+#         'USER': CONFIG['db_username'],
+#         'PASSWORD': CONFIG['db_password'],
+#         'HOST': CONFIG['db_address'],
+#         'PORT': '3306',
+#     }
+# }
+
 # DATABASES = {
 #         'default': {
 #             'HOST': 'localhost',
@@ -96,3 +105,11 @@ INSTALLED_APPS = ['otree']
 #             'PASSWORD': 'royzerbib10'
 #         }
 #     }
+
+
+# {
+#     'name': 'my_simple_survey',
+#     'num_demo_participants': 4,
+#     'app_sequence': ['my_simple_survey'],
+#     # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
+# },
