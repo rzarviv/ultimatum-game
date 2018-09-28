@@ -209,4 +209,4 @@ You can access the usage document [here](https://docs.google.com/document/d/1Rm1
 ##TODO List:
 
 1. Connect the project to Amazon MTurk (and document it in the documents).
-2. Set MySQL as the main database instead of SQLite.
+

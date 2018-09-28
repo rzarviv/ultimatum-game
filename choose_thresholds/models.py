@@ -1,18 +1,14 @@
 from otree.api import (
     models, BaseConstants, BaseSubsession, BaseGroup, BasePlayer, Currency as c, currency_range
 )
-from MySQLdb import Warning, Error, connect
+import psycopg2
+from psycopg2.extensions import AsIs
+
 from ultimatum_config import CONFIG
 
 author = 'Roy Zerbib'
 
-
-# messages definition. add your messages here
-# selfish_message = "we indicate that you will probably get a very selfish offer"
-# generous_message = "we indicate that you will probably get a very generous offer"
-# average_message = "we indicate that you will probably get an average offer"
-# messages = [selfish_message, generous_message, average_message]
-messages  = CONFIG['messages']
+messages = CONFIG['messages']
 
 ################################ database creation methods #######################################
 
@@ -20,45 +16,49 @@ username = CONFIG['db_username']
 password = CONFIG['db_password']
 address = CONFIG['db_address']
 schema_name = CONFIG['db_schema_name']
+database_name = CONFIG['db_name']
 
 
 def create_database():
-    db = connect(address, username, password)
-    cursor = db.cursor()
-    query = 'CREATE DATABASE IF NOT EXISTS ' + schema_name
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
+    command = """ CREATE SCHEMA IF NOT EXISTS %s AUTHORIZATION %s ;"""
+    params = (AsIs(schema_name), AsIs(username),)
 
     try:
-        cursor.execute(query)
-        db.commit()
+        cur.execute(command, params)
+        cur.close()
+        conn.commit()
+    except Exception as error:
+        print(str(error))
+    finally:
+        if conn is not None:
+            conn.close()
 
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
 
-    db.close()
+def create_table_thresholds():
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
+    command = """ CREATE TABLE IF NOT EXISTS %s.THRESHOLDS (
+                                            SESSION_CODE VARCHAR(30) NOT NULL,
+                                            PLAYER_ID INTEGER NOT NULL,
+                                            MESSAGE VARCHAR(100) NOT NULL,
+                                            MIN_ACCEPT INTEGER NOT NULL,
+                                            MAX_REJECT INTEGER NOT NULL,
+                                            PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE)
+                                            ); """
+    param = (AsIs(schema_name),)
 
-
-def create_table():
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
-    # create a table that stores the user'ss thresholds for each message
-    query = """CREATE TABLE IF NOT EXISTS THRESHOLDS(
-                                           SESSION_CODE  CHAR(30) NOT NULL,
-                                           PLAYER_ID INT NOT NULL,
-                                           MESSAGE CHAR(100) NOT NULL,                                      
-                                           MIN_ACCEPT INT NOT NULL,
-                                           MAX_REJECT INT NOT NULL,
-                                           CONSTRAINT PK_THRESHOLD PRIMARY KEY (SESSION_CODE,PLAYER_ID,MESSAGE))
-                                           """
     try:
-        cursor.execute(query)
-        db.commit()
+        cur.execute(command, param)
+        cur.close()
+        conn.commit()
+    except Exception as error:
+        print(str(error))
+    finally:
+        if conn is not None:
+            conn.close()
 
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
 
 ##################################################################################################
 
@@ -83,9 +83,8 @@ class Subsession(BaseSubsession):
 
     # if the app has multiple rounds, creating_session gets run multiple times consecutively
     def creating_session(self):
-
         create_database()
-        create_table()
+        create_table_thresholds()
 
         for p in self.get_players():
             p.set_message()

@@ -82,6 +82,9 @@ SECRET_KEY = '5!sx)cs(uhcjfga+5__&8x$r+6%kywask0iq9*(q#4d8)0lcw3'
 # if an app is included in SESSION_CONFIGS, you don't need to list it here
 INSTALLED_APPS = ['otree']
 
+environ['DATABASE_URL'] = 'postgres://postgres@localhost/ultimatum'
+
+
 # environ['DATABASE_URL'] = 'mysql://localhost:3306'
 #
 # DATABASES = {

@@ -1,5 +1,5 @@
-from MySQLdb import Warning, Error, connect
-
+import psycopg2
+from psycopg2.extensions import AsIs
 from ultimatum_config import CONFIG
 from ._builtin import Page
 
@@ -7,27 +7,30 @@ username = CONFIG['db_username']
 password = CONFIG['db_password']
 address = CONFIG['db_address']
 schema_name = CONFIG['db_schema_name']
+database_name = CONFIG['db_name']
 
 
 ########################## utility functions #############################
 
 def store_players_thresholds(session_code, player_id, message, min_accept, max_reject):
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
 
-    insert = """INSERT INTO THRESHOLDS(
-                                 SESSION_CODE, PLAYER_ID, MESSAGE, MIN_ACCEPT, MAX_REJECT)
-                                 VALUES (%s, %s, %s, %s, %s ) 
-                                 """
+    insert = """INSERT INTO %s.THRESHOLDS(
+                                     SESSION_CODE, PLAYER_ID, MESSAGE, MIN_ACCEPT, MAX_REJECT)
+                                     VALUES (%s, %s, %s, %s, %s );"""
+    params = (
+        AsIs(schema_name), session_code, AsIs(player_id), message, AsIs(min_accept), AsIs(max_reject),)
+
     try:
-        cursor.execute(insert, (session_code, player_id, message, min_accept, max_reject,))
-
-        db.commit()
-    except(Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
+        cur.execute(insert, params)
+        cur.close()
+        conn.commit()
+    except Exception as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
 
 def currency_to_int(currency_field):

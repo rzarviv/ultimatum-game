@@ -1,5 +1,6 @@
 from ._builtin import Page
-from MySQLdb import Warning, Error, connect
+import psycopg2
+from psycopg2.extensions import AsIs
 import datetime
 from ultimatum_config import CONFIG
 from .models import Constants
@@ -8,29 +9,33 @@ username = CONFIG['db_username']
 password = CONFIG['db_password']
 schema_name = CONFIG['db_schema_name']
 address = CONFIG['db_address']
+database_name = CONFIG['db_name']
 
 
 ########################## utility functions #############################
 
 def store_players_data(session_code, round_num, player_id,
                        is_complex, amount_offered, message, offer_accepted, time_stamp):
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
-    insert = """INSERT INTO ALL_DATA(
-                                 SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
-                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s ) 
-                                 """
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
+
+    insert = """INSERT INTO %s.ALL_DATA(
+                                  SESSION_CODE, ROUND, PLAYER_ID, COMPLEX, AMOUNT_OFFERED, MESSAGE, OFFER_ACCEPTED, TIME_STAMP)
+                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s );"""
+    params = (
+        AsIs(schema_name), session_code, AsIs(round_num), AsIs(player_id), is_complex, AsIs(amount_offered), message,
+        offer_accepted, time_stamp,)
+
     try:
-        cursor.execute(insert, (
-            session_code, round_num, player_id, is_complex, amount_offered, message,
-            offer_accepted, time_stamp,))
+        cur.execute(insert, params)
+        cur.close()
+        conn.commit()
 
-        db.commit()
-    except(Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
+    except Exception as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
 
 def currency_to_int(currency_field):
@@ -81,7 +86,7 @@ class Accept(Page):
         else:
             offer_accepted = 'N'
 
-        time_stamp = str(datetime.datetime.utcnow())
+        time_stamp = str(datetime.datetime.now())
 
         store_players_data(session_code, round_num, player_id, is_complex, amount_offered,
                            message, offer_accepted, time_stamp)

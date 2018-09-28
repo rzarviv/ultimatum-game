@@ -3,7 +3,8 @@ from otree.api import (
     Currency as c, currency_range,
 )
 import random
-from MySQLdb import Warning, Error, connect
+import psycopg2
+from psycopg2.extensions import AsIs
 from ultimatum_config import CONFIG
 
 ################################ database creation methods #######################################
@@ -12,47 +13,51 @@ username = CONFIG['db_username']
 password = CONFIG['db_password']
 schema_name = CONFIG['db_schema_name']
 address = CONFIG['db_address']
+database_name = CONFIG['db_name']
 
 
 def create_database():
-    db = connect(address, username, password)
-    cursor = db.cursor()
-    query = 'CREATE DATABASE IF NOT EXISTS ' + schema_name
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
+    command = """ CREATE SCHEMA IF NOT EXISTS %s AUTHORIZATION %s ;"""
+    params = (AsIs(schema_name), AsIs(username),)
 
     try:
-        cursor.execute(query)
-        db.commit()
+        cur.execute(command, params)
+        cur.close()
+        conn.commit()
+    except Exception as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
 
-    db.close()  # closing now to connect to the new database later
+def create_table_all_data():
+    conn = psycopg2.connect(host=address, database=database_name, user=username, password=password)
+    cur = conn.cursor()
+    command = """ CREATE TABLE IF NOT EXISTS %s.ALL_DATA (
+                                                SESSION_CODE VARCHAR(30) NOT NULL,
+                                                ROUND INTEGER NOT NULL,
+                                                PLAYER_ID INTEGER NOT NULL,
+                                                COMPLEX VARCHAR(1) NOT NULL,
+                                                MESSAGE VARCHAR(100) NOT NULL,
+                                                AMOUNT_OFFERED INTEGER NOT NULL,
+                                                OFFER_ACCEPTED VARCHAR(1) NOT NULL,
+                                                TIME_STAMP TIMESTAMPTZ NOT NULL,
+                                                PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID)
+                                                ); """
+    param = (AsIs(schema_name),)
 
-
-def create_table():
-    db = connect(address, username, password, schema_name)
-    cursor = db.cursor()
-    query = """CREATE TABLE IF NOT EXISTS ALL_DATA(
-                                          SESSION_CODE  CHAR(30) NOT NULL,
-                                          ROUND  INT NOT NULL,
-                                          PLAYER_ID INT NOT NULL,
-                                          COMPLEX CHAR(1) NOT NULL,
-                                          MESSAGE CHAR(100),
-                                          AMOUNT_OFFERED INT NOT NULL,
-                                          OFFER_ACCEPTED CHAR(1) NOT NULL,
-                                          TIME_STAMP TIMESTAMP NOT NULL,
-                                          CONSTRAINT PK_ROUND PRIMARY KEY (SESSION_CODE,ROUND,PLAYER_ID))
-                                        """
     try:
-        cursor.execute(query)
-        db.commit()
-
-    except (Error, Warning) as e:
-        print(e)
-        db.rollback()
-
-    db.close()
+        cur.execute(command, param)
+        cur.close()
+        conn.commit()
+    except Exception as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
 
 ##################################################################################################
@@ -89,7 +94,7 @@ class Subsession(BaseSubsession):
     # if the app has multiple rounds, creating_session gets run multiple times consecutively
     def creating_session(self):
         create_database()
-        create_table()
+        create_table_all_data()
         for p in self.get_players():
             p.amount_offered = random.choice(Constants.offer_choices)
             p.complex_mode = self.session.config['complex_mode']
