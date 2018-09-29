@@ -84,35 +84,3 @@ INSTALLED_APPS = ['otree']
 
 environ['DATABASE_URL'] = 'postgres://postgres@localhost/ultimatum'
 
-
-# environ['DATABASE_URL'] = 'mysql://localhost:3306'
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': CONFIG['db_schema_name'],
-#         'USER': CONFIG['db_username'],
-#         'PASSWORD': CONFIG['db_password'],
-#         'HOST': CONFIG['db_address'],
-#         'PORT': '3306',
-#     }
-# }
-
-# DATABASES = {
-#         'default': {
-#             'HOST': 'localhost',
-#             'PORT': '3306',
-#             'ENGINE': 'mysql.connector.django',
-#             'NAME': 'usersdata',
-#             'USER': 'root',
-#             'PASSWORD': 'royzerbib10'
-#         }
-#     }
-
-
-# {
-#     'name': 'my_simple_survey',
-#     'num_demo_participants': 4,
-#     'app_sequence': ['my_simple_survey'],
-#     # 'num_rounds':  len(GAMES),# this attribute was added to the 'Configure Session' segment in both 'sessions' and 'room' pages
-# },
