@@ -1,9 +1,6 @@
 CONFIG = {
     "num_rounds": 3,
-    # "db_address": "localhost",
-    # "db_username": "root",
-    # "db_password": "royzerbib10",
-    # "db_schema_name": "usersData",
+    # database parameters
     "db_address": "localhost",
     "db_name": "ultimatum",
     "db_username": "postgres",
