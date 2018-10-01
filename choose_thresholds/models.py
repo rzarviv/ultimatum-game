@@ -8,7 +8,7 @@ from ultimatum_config import CONFIG
 
 author = 'Roy Zerbib'
 
-messages = CONFIG['messages']
+messages = CONFIG['messages_thresholds']
 
 ################################ database creation methods #######################################
 

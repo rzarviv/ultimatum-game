@@ -79,10 +79,10 @@ class Constants(BaseConstants):
     payoff_if_rejected = c(0)
     offer_increment = c(1)
 
-    selfish_message = "We indicate that you will probably get a very selfish offer"
-    generous_message = "We indicate that you will probably get a very generous offer"
-    average_message = "We indicate that you will probably get an average offer"
-    messages = [selfish_message, generous_message, average_message]
+    # selfish_message = "We indicate that you will probably get a very selfish offer"
+    # generous_message = "We indicate that you will probably get a very generous offer"
+    # average_message = "We indicate that you will probably get an average offer"
+    messages = CONFIG['messages_ultimatum']
 
     #  range of all the offers a player can get
     offer_choices = currency_range(0, endowment, offer_increment)
